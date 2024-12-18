@@ -32,9 +32,9 @@ class MainActivity : ComponentActivity() {
                 val navController= rememberNavController()
             // DisplayItemDiscreption(menuItemid = 7, navController =navController)
             //DisplayPayementInfo(userid = 1, orderid = 1)
-             //  DisplayCardItems()
+               DisplayCardItems(navController)
            // DisplayRestaurantMenu(navController = )
-                MyBottomNavigation()
+               // MyBottomNavigation()
 
                 // DialogScreen()
               //  RatingDialogScreen()
