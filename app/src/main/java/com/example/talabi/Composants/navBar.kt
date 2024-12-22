@@ -71,7 +71,7 @@ fun MyBottomNavigation() {
                                             0 -> Destination.home.route
                                             1 -> Destination.Notification.route
                                             2 -> Destination.Card.route
-                                            3 -> Destination.Profil.route
+                                            3 -> Destination.profile.route
                                             else -> Destination.RestaurantMenu.route
                                         }
                                     ) {

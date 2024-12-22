@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -63,6 +64,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.tools.core)
+    //implementation(libs.play.services.basement)
+   // implementation(libs.google.play.services.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -77,5 +80,21 @@ dependencies {
     implementation ("io.ktor:ktor-client-cio:2.0.0")
     implementation ("io.ktor:ktor-client-serialization:2.0.0")
     implementation ("io.ktor:ktor-client-json:2.0.0")
+    //implementation ("com.google.android.gms:play-services-auth:15.0.0")
+    implementation(libs.androidx.foundation)
+    //noinspection UseTomlInstead
+    implementation("androidx.compose.ui:ui:1.7.6")
+    //implementation(libs.material3)
+    implementation(libs.androidx.navigation)
+    //implementation(libs.google.play.services.auth)
+    implementation("com.google.android.gms:play-services-auth:20.7.0") {
+        exclude(group = "com.android.support")
+    }
+    val room_version = "2.6.0"
+    implementation (libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation (libs.androidx.room.ktx)
+    testImplementation (libs.androidx.room.testing)
+
 
 }

@@ -10,7 +10,7 @@ sealed class Destination(val route:String) {
     }
     object Card:Destination("Card")
     object Notification:Destination("Notification")
-    object Profil:Destination("Profil")
+   // object Profil:Destination("Profil")
     object PayementandAddress:Destination("PayementandAddress")
     object home:Destination("home")
     object search:Destination("search")
@@ -18,4 +18,10 @@ sealed class Destination(val route:String) {
     object more:Destination("more")
     object LieuPage:Destination("LieuPage")
     object categories:Destination("categories")
+    object login:Destination("login")
+    object signup:Destination("signup")
+    object language:Destination("language")
+    object settings:Destination("settings")
+    object profile:Destination("profile")
+
 }
