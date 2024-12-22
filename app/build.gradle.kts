@@ -72,5 +72,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.core:core-ktx:1.13.1")
     implementation ("androidx.navigation:navigation-compose:2.8.3")
+    //add by chatgpt in order to set up Node js here
+    implementation ("io.ktor:ktor-client-core:2.0.0")
+    implementation ("io.ktor:ktor-client-cio:2.0.0")
+    implementation ("io.ktor:ktor-client-serialization:2.0.0")
+    implementation ("io.ktor:ktor-client-json:2.0.0")
 
 }

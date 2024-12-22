@@ -51,7 +51,8 @@ fun DisplayCardItems(navController: NavHostController) {
 
        TopBar(content = "My Card", imageVector =  Icons.AutoMirrored.Filled.KeyboardArrowLeft,onClick = {})
         Box(
-            modifier = Modifier.fillMaxSize() ,
+            modifier = Modifier.fillMaxSize().background(color = Color.Transparent) ,
+
 
         )
         {
@@ -63,7 +64,7 @@ fun DisplayCardItems(navController: NavHostController) {
                 //Text(text = "Check our famous Restaurants :",style= TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold))
                 LazyColumn(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
-                    modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()).padding(bottom = 200.dp)
+                    modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues()).padding(bottom = 170.dp)
 
                     ) {
                     items(
@@ -80,8 +81,8 @@ fun DisplayCardItems(navController: NavHostController) {
             }
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = white.copy(0.9f),
-                    contentColor = white.copy(0.9f),
+                    containerColor = white,
+                    contentColor = white.copy(0.5f),
 
                 ),
                 modifier = Modifier
@@ -89,6 +90,7 @@ fun DisplayCardItems(navController: NavHostController) {
                     .align(Alignment.BottomCenter)
                     //.padding(WindowInsets.navigationBars.asPaddingValues())
                     .padding(bottom = 90.dp)
+                    .background(white.copy(0.7f),)
                         ,
                 shape = RoundedCornerShape(16.dp)
 
@@ -97,25 +99,27 @@ fun DisplayCardItems(navController: NavHostController) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier
-                        .padding(vertical = 43.dp)
+                        .padding(bottom = 30.dp)
                         .fillMaxWidth()
-                        .background(Color.Transparent)
+                        .background(white.copy(0.7f),)
                 ) {
 
 
-                    Column {
+                    Column(
+                        modifier = Modifier.background(white.copy(0.7f),)
+                    ) {
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(3.dp)
-                                .background(Color.Transparent),
+                                .background(white.copy(0.7f),),
                         ) {
                             Text(
                                 text = "Delivery fees : ",
                                 style = TextStyle(
                                     fontStyle = FontStyle.Italic,
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = (screenHeight / 40).sp,
+                                    fontSize = (16).sp,
                                     color = orange
                                 )
                             )
@@ -133,14 +137,14 @@ fun DisplayCardItems(navController: NavHostController) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(3.dp)
-                                .background(Color.Transparent),
+                                .background(white.copy(0.7f),),
                         ) {
                             Text(
                                 text = "Total price : ",
                                 style = TextStyle(
                                     fontStyle = FontStyle.Italic,
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp,
+                                    fontSize = 18.sp,
                                     color = orange
                                 )
                             )

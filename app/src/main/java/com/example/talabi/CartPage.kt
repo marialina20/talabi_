@@ -57,24 +57,8 @@ fun StaticMapScreen() {
 
             Row (verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()){
-              // Spacer(modifier = Modifier.width(4.dp))
-//                Image(
-//                    painter = painterResource(R.drawable.img_18),
-//                    contentDescription = null,
-//                    modifier = Modifier.size(40.dp)
-//                )
-//                Spacer(modifier = Modifier.width(45.dp))
-//                Text(text = "Specify your address",
-//                    fontSize = 20.sp,
-//                    fontWeight = FontWeight.Bold
-//
-//                  )
                 TopBar(content = "Specify your address", imageVector =  Icons.AutoMirrored.Filled.KeyboardArrowLeft,onClick={})
-
-
             }
-
-
 
             Card(
                 modifier = Modifier

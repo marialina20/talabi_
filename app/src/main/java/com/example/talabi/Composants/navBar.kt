@@ -40,59 +40,67 @@ fun MyBottomNavigation() {
         Icons.Filled.Person
     )
     val navController= rememberNavController()
-    Scaffold (bottomBar = {
-    NavigationBar(
-        containerColor = orange,
-        tonalElevation = 3.dp,
-        modifier = Modifier.clip(shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
-            .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .height(70.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize().align(Alignment.CenterVertically),
-            horizontalArrangement = Arrangement.SpaceEvenly, // Evenly distribute items
-            verticalAlignment = Alignment.CenterVertically // Center items vertically
-        ) {
+    Scaffold (
 
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-
-                selected = selectedItem == index,
-                onClick = {
-                    selectedItem = index
-                    navController.navigate(
-                        when (index) {
-                            0 -> Destination.RestaurantMenu.route
-                            1 -> Destination.Notification.route
-                            2 -> Destination.Card.route
-                            3 -> Destination.Profil.route
-                            else -> Destination.RestaurantMenu.route
-                        }
+        bottomBar = {
+            Surface(shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+                color = orange,
+                modifier = Modifier.height(140.dp).windowInsetsPadding(WindowInsets.systemBars).fillMaxWidth()
+                ) {
+                NavigationBar(
+                    containerColor = Color.Transparent,
+                    // tonalElevation = 3.dp,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 5.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize().align(Alignment.CenterVertically),
+                        horizontalArrangement = Arrangement.SpaceEvenly, // Evenly distribute items
+                        verticalAlignment = Alignment.CenterVertically // Center items vertically
                     ) {
-                        // Clear the back stack to avoid duplicate screens on the stack
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
+
+                        items.forEachIndexed { index, item ->
+                            NavigationBarItem(
+
+                                selected = selectedItem == index,
+                                onClick = {
+                                    selectedItem = index
+                                    navController.navigate(
+                                        when (index) {
+                                            0 -> Destination.home.route
+                                            1 -> Destination.Notification.route
+                                            2 -> Destination.Card.route
+                                            3 -> Destination.Profil.route
+                                            else -> Destination.RestaurantMenu.route
+                                        }
+                                    ) {
+                                        // Clear the back stack to avoid duplicate screens on the stack
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = icons[index],
+                                        contentDescription = item,
+                                        tint = if (selectedItem == index) blue else white
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        text = item,
+                                        color = if (selectedItem == index) blue else white
+                                    )
+                                }
+                            )
+                        }
                     }
-                },
-                icon = {
-                    Icon(
-                        imageVector = icons[index],
-                        contentDescription = item,
-                        tint = if (selectedItem == index) blue else white
-                    )
-                },
-                label = {
-                    Text(
-                        text = item,
-                        color = if (selectedItem == index) blue else white
-                    )
                 }
-            )
-        }
-        }
-    }
+            }
     }){
             paddingValues->
         NavigationScreen(navController = navController, modifier = Modifier.padding(paddingValues))

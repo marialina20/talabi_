@@ -16,6 +16,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.privacysandbox.tools.core.model.Type
+import com.example.ahlem.CategoriesScreen
+import com.example.ahlem.HomeScreen
+import com.example.ahlem.MainScreeen
+import com.example.ahlem.MoreRestaurantsScreen
+import com.example.ahlem.RestaurantDetailsScreen
+import com.example.ahlem.SearchScreen
 import com.example.myapplication.ui.theme.DisplayLieuPage
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.MyBottomNavigation
@@ -30,12 +36,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 val navController= rememberNavController()
+                //MainScreen()
             // DisplayItemDiscreption(menuItemid = 7, navController =navController)
             //DisplayPayementInfo(userid = 1, orderid = 1)
-               DisplayCardItems(navController)
+              // DisplayCardItems(navController)
            // DisplayRestaurantMenu(navController = )
-               // MyBottomNavigation()
-
+                MyBottomNavigation()
+               // MainScreeen()
                 // DialogScreen()
               //  RatingDialogScreen()
             }
@@ -47,7 +54,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifier) {
 
-    NavHost(navController=navController, startDestination= Destination.RestaurantMenu.route
+    NavHost(navController=navController, startDestination= Destination.home.route
 
     ) {
 
@@ -59,6 +66,11 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
          composable(Destination.Notification.route) { NotifListt() }
          composable(Destination.PayementandAddress.route) { DisplayPayementInfo(userid = 1, orderid = 1,navController) }
          composable(Destination.LieuPage.route) { DisplayLieuPage(navController) }
+        composable(Destination.home.route) { HomeScreen(navController) }
+        composable(Destination.search.route) { SearchScreen() }
+        composable(Destination.categories.route) { CategoriesScreen() }
+        composable(Destination.restaurant_details.route) { RestaurantDetailsScreen() }
+        composable(Destination.more.route) { MoreRestaurantsScreen() }
 
 //
 //        composable(Destination.Ecron4.route) { Ecron4(navController) }

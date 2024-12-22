@@ -85,13 +85,6 @@ fun DisplayRestaurantMenu(navController: NavHostController) {
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ){
-//            val selectedButtonIndex = remember { mutableStateOf(-1) }
-//            SquareButton(R.drawable.drink,"Drink",white,70,40, isSelected =  selectedButtonIndex.value ==0,  onClick = { selectedButtonIndex.value = 0} )
-//            SquareButton(R.drawable.burger,"Burger",white,70,40,isSelected =  selectedButtonIndex.value ==2, onClick = { selectedButtonIndex.value = 2 })
-//            SquareButton(R.drawable.dish,"Taco",white,70,40,isSelected =  selectedButtonIndex.value ==3, onClick = { selectedButtonIndex.value = 3 })
-//            SquareButton(R.drawable.pizza,"Pizza",white,70,40,isSelected =  selectedButtonIndex.value ==4, onClick = { selectedButtonIndex.value = 4 })
-//            SquareButton(R.drawable.salade,"Salade",white,70,40,isSelected =  selectedButtonIndex.value ==5, onClick = { selectedButtonIndex.value = 5 })
-
         }
         //Text(text = "Check our famous Restaurants :",style= TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold))
         LazyColumn(
@@ -114,31 +107,3 @@ fun DisplayRestaurantMenu(navController: NavHostController) {
 
 
 
-
-/**********************************************************************************/
-/*
-floatingActionButton = {
-    FloatingActionButton(onClick = { presses++ }) {
-        Icon(Icons.Default.Add, contentDescription = "Add")
-    }
-}
-*/
-
-
-
-
-
-
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.addicon),
-//                        contentDescription = "Add",
-//                        tint = Color.White,
-//                       modifier = Modifier
-//                           .fillMaxSize()
-//                           .size(20.dp).background(Color.White,)
-//                   )
-//                        Icon(
-//                        imageVector = Icons.Filled.Add,
-//                        contentDescription = "Add",
-//                       // modifier = Modifier.size(50.dp)
-//                    )
