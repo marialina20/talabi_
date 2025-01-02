@@ -1,5 +1,6 @@
 package com.example.talabi.Composants
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,12 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -35,10 +42,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.talabi.Destination
+import com.example.talabi.Menu
+import com.example.talabi.Restaurant
+import com.example.talabi.api.RetrofitInstance
+import com.example.talabi.data.menuItems
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.gray
 import com.example.talabi.ui.theme.gray2
 import com.example.talabi.ui.theme.orange
+import kotlinx.coroutines.launch
 
 @Composable
 fun DisplayoneCarditem(menuItemId: Int) {
@@ -172,8 +184,11 @@ fun DisplayoneCarditem(menuItemId: Int) {
 
 
 @Composable
-fun DisplayoneMenuItem(menuItemId: Int,navController: NavHostController) {
-    val menuItem = getMenuItemById(menuItemId)
+fun DisplayoneMenuItem(menuList: List<Menu>,menuItemId: Int,navController: NavHostController) {
+
+
+
+    val menuItem = menuList.find { it.restaurant_id == menuItemId }
     Card(
         modifier = Modifier
             .shadow(shape = RoundedCornerShape(16.dp), elevation = 10.02.dp)
@@ -218,7 +233,7 @@ fun DisplayoneMenuItem(menuItemId: Int,navController: NavHostController) {
                             modifier = Modifier.size(24.dp) // Change the icon size
                         )
                         Text(
-                            text = " ${menuItem.averageRating}",
+                            text = " ${menuItem.average_rating}",
                             style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp)
                         )
                         //Text(text = " ${menuItem.price}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))

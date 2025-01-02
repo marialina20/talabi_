@@ -1,5 +1,6 @@
 package com.example.talabi
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -41,8 +42,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +69,7 @@ import com.example.talabi.Composants.DisplayRestaurantImage
 import com.example.talabi.Composants.DisplayoneMenuItem
 import com.example.talabi.Composants.MenuItemImage
 import com.example.talabi.Composants.SquareButton
+import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.MenuItem
 import com.example.talabi.data.Restaurant
 import com.example.talabi.data.menuItems
@@ -71,6 +77,7 @@ import com.example.talabi.data.restaurants
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.orange
 import com.example.talabi.ui.theme.white
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -86,6 +93,29 @@ fun DisplayRestaurantMenu(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically
         ){
         }
+        var MenuList by remember { mutableStateOf<List<Menu>>(emptyList()) }
+        val coroutineScope = rememberCoroutineScope()
+
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                try {
+                    val response = RetrofitInstance.api.getMenu()
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+                        if (responseBody != null) {
+                            MenuList = responseBody  // Assign the list of restaurants to the state
+                            Log.d("NearRestaurants", "Data fetched successfully: $MenuList")
+                        } else {
+                            Log.e("NearRestaurants", "Empty response body")
+                        }
+                    } else {
+                        Log.e("NearRestaurants", "Error fetching data: ${response.errorBody()?.string()}")
+                    }
+                } catch (e: Exception) {
+                    Log.e("NearRestaurants", "Error: ${e.localizedMessage}")
+                }
+            }
+        }
         //Text(text = "Check our famous Restaurants :",style= TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold))
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
@@ -94,9 +124,9 @@ fun DisplayRestaurantMenu(navController: NavHostController) {
             ) {
             items(
 
-                items = menu,
+                items = MenuList,
                 itemContent = {
-                    DisplayoneMenuItem(menuItemId = it.id,navController)
+                    DisplayoneMenuItem(MenuList,menuItemId = it.restaurant_id,navController)
                 }
 
             )

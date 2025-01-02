@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.tools.core)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.recyclerview)
     //implementation(libs.play.services.basement)
    // implementation(libs.google.play.services.auth)
     testImplementation(libs.junit)
@@ -87,6 +89,9 @@ dependencies {
     //implementation(libs.material3)
     implementation(libs.androidx.navigation)
     //implementation(libs.google.play.services.auth)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
     implementation("com.google.android.gms:play-services-auth:20.7.0") {
         exclude(group = "com.android.support")
     }
