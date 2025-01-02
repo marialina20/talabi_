@@ -89,6 +89,7 @@ import com.example.ahlem.SearchScreen
 import com.example.myapplication.ui.theme.DisplayLieuPage
 import com.example.talabi.data.SettingsScreen
 import com.example.talabi.ui.theme.AppTheme
+import com.example.talabi.ui.theme.ChatListt
 import com.example.talabi.ui.theme.MyBottomNavigation
 import com.example.talabi.ui.theme.NotifListt
 
@@ -102,6 +103,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 val navController= rememberNavController()
+<<<<<<< Updated upstream
                 //MainScreen()
                 // DisplayItemDiscreption(menuItemid = 7, navController =navController)
                 //DisplayPayementInfo(userid = 1, orderid = 1)
@@ -109,6 +111,14 @@ class MainActivity : ComponentActivity() {
                 // DisplayRestaurantMenu(navController = )
                 MyBottomNavigation()
                 // MainScreeen()
+=======
+            // DisplayItemDiscreption(menuItemid = 7, navController =navController)
+            //DisplayPayementInfo(userid = 1, orderid = 1)
+               //DisplayCardItems(navController)
+           // DisplayRestaurantMenu(navController = )
+               // MyBottomNavigation()
+                ChatListt()
+>>>>>>> Stashed changes
                 // DialogScreen()
                 //  RatingDialogScreen()
             }
