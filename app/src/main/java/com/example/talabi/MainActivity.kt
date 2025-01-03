@@ -154,7 +154,14 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
         composable(Destination.LieuPage.route) { DisplayLieuPage(navController) }
         composable(Destination.home.route) { HomeScreen(navController) }
         composable(Destination.search.route) { SearchScreen() }
-        composable(Destination.categories.route) { CategoriesScreen() }
+        composable(
+            route = "categories/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val restaurantId = backStackEntry.arguments?.getString("id") ?: ""
+            CategoriesScreen(id = restaurantId,navController)
+        }
+
         composable(Destination.restaurant_details.route) { RestaurantDetailsScreen() }
         composable(Destination.more.route) { MoreRestaurantsScreen() }
         composable(Destination.login.route) {

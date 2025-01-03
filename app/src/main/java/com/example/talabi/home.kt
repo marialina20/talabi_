@@ -40,6 +40,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.talabi.Destination
 import com.example.talabi.R
 import androidx.compose.runtime.*
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.example.talabi.Menu
 import com.example.talabi.Restaurant
 import com.example.talabi.api.RetrofitInstance
 import kotlinx.coroutines.launch
@@ -66,7 +69,14 @@ fun MainScreeen() {
         ) {
             composable("home") { HomeScreen(navController) }
             composable("search") { SearchScreen() }
-            composable("categories") { CategoriesScreen() }
+            composable(
+                "categories/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val restaurantId = backStackEntry.arguments?.getString("id") ?: ""
+                CategoriesScreen(id = restaurantId, navController)
+            }
+
             composable("restaurant_details") { RestaurantDetailsScreen() }
             composable("more") { MoreRestaurantsScreen() }
         }
@@ -180,10 +190,11 @@ fun CategoriesRow(navController: NavController) {
         ),
         Category(
             id = java.util.UUID.randomUUID().toString(), // Assign random UUID
-            name = "Burger",
+            name = "Italian",
             imageRes = R.drawable.burger1
         )
     )
+
 
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
@@ -191,14 +202,15 @@ fun CategoriesRow(navController: NavController) {
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(categories) { category ->
+
             Box(
                 modifier = Modifier
                     .size(width = 90.dp, height = 110.dp)
                     .shadow(8.dp, shape = RoundedCornerShape(30.dp))
                     .background(Color.White, shape = RoundedCornerShape(30.dp))
                     .clickable {
-                        println("Category ID: ${category.id}") // Example of using the ID
-                        navController.navigate("categories")
+                        println("Category IDdddddddddddddddddd: ${category.name}") // Example of using the ID
+                        navController.navigate("categories/${category.name}")
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -573,16 +585,103 @@ fun SearchScreen() {
 
 
 @Composable
-fun CategoriesScreen() {
-    Box(
+fun CategoriesScreen(id : String, navController: NavController) {
+    var restaurantList by remember { mutableStateOf<List<Restaurant>>(emptyList()) }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            try {
+                val response = RetrofitInstance.api.getRestaurantByType(id)
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        restaurantList = responseBody  // Assign the list of restaurants to the state
+                        Log.d("NearRestaurants", "Data fetched successfully: $restaurantList")
+                    } else {
+                        Log.e("NearRestaurants", "Empty response body")
+                    }
+                } else {
+                    Log.e("NearRestaurants", "Error fetching data: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("NearRestaurants", "Error: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        contentAlignment = Alignment.Center
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
-        Text("Categories Screen", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
+        items(restaurantList) { restaurant ->
+            Card(
+                shape = RoundedCornerShape(30.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .clickable { navController.navigate("restaurantMenu/${restaurant.id}") },
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(3.dp) // Add shadow
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp), // Adjust height for consistency
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Assuming the image is stored in a drawable or URL for each restaurant
+                    val imageRes = R.drawable.drink // Replace with actual logic to load image
+                    Image(
+                        painter = painterResource(id = imageRes),
+                        contentDescription = "Restaurant Image",
+                        modifier = Modifier
+                            .fillMaxHeight() // Ensures image takes full height
+                            .width(120.dp) // Adjust width as needed
+                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp), // Adds spacing between lines
+                        modifier = Modifier.padding(vertical = 8.dp) // Adds vertical padding
+                    ) {
+                        Text(
+                            text = restaurant.name,
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp,
+                                color = Color(0xFF333A73)
+                            )
+                        )
+                        Text(
+                            text = restaurant.address,
+                            style = TextStyle(
+                                color = Color.Gray,
+                                fontSize = 12.sp
+                            )
+                        )
+                        Text(
+                            text = "⭐ ${restaurant.average_rating}",
+                            style = TextStyle(
+                                color = Color(0xFFFFA500),
+                                fontSize = 12.sp
+                            )
+                        )
+                        Text(
+                            text = "📞 ${restaurant.contact_phone}",
+                            style = TextStyle(
+                                color = Color.Gray,
+                                fontSize = 12.sp
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 }
+
 
 @Composable
 fun RestaurantDetailsScreen() {
