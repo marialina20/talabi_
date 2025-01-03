@@ -182,106 +182,106 @@ fun DisplayoneCarditem(menuItemId: Int) {
 
 }
 
-
-@Composable
-fun DisplayoneMenuItem(menuList: List<Menu>,menuItemId: Int,navController: NavHostController) {
-
-
-
-    val menuItem = menuList.find { it.restaurant_id == menuItemId }
-    Card(
-        modifier = Modifier
-            .shadow(shape = RoundedCornerShape(16.dp), elevation = 10.02.dp)
-            .padding(bottom = 5.dp)
-            .fillMaxWidth()
-            .clickable(onClick = {navController.navigate(Destination.FoodDescription.route) }),
-        shape = RoundedCornerShape(corner = CornerSize(16.dp)),
-
-        ) {
-
-        Row(
-            modifier = Modifier.background(color = AppTheme.colors.background)
-        ) {
-            MenuItemImage(menuItemId)
-            Column(
-                modifier = Modifier
-                    .padding(3.dp)
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically)
-
-            ) {
-                Text(
-                    text = " ${menuItem!!.name}",
-                    style = TextStyle(
-                        fontStyle = FontStyle.Italic,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(3.dp),
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(3.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = "Star icon",
-                            tint = AppTheme.colors.secondarySurface, // Change the icon color
-                            modifier = Modifier.size(24.dp) // Change the icon size
-                        )
-                        Text(
-                            text = " ${menuItem.average_rating}",
-                            style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp)
-                        )
-                        //Text(text = " ${menuItem.price}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
-                    }
-                    Spacer(modifier = Modifier.size(30.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(3.dp),
-                    ) {
-                        Text(
-                            text = "$",
-                            style = TextStyle(
-                                fontStyle = FontStyle.Italic,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
-                                color = orange
-                            )
-                        )
-                        //Text(text = " ${menuItem.averageRating}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
-                        Text(
-                            text = " ${menuItem.price}",
-                            style = TextStyle(
-                                fontStyle = FontStyle.Italic,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
-                                color = orange
-                            )
-                        )
-                    }
-                }
 //
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier
-                        .padding(3.dp)
-                        .fillMaxWidth(),
-                ) {
-                    CircularAddButton(
-                        onClick = { /*TODO*/ },
-                        content = "+",
-                        contentColor = Color.White,
-                        buttonColor = AppTheme.colors.actionSurface,
-                        size = 50
-                    )
-                }
-
-            }
-
-        }
-    }
-}
+//@Composable
+//fun DisplayoneMenuItem(menuList: List<Menu>,menuItemId: String,navController: NavHostController) {
+//
+//
+//
+//    val menuItem = menuList.find {  }
+//    Card(
+//        modifier = Modifier
+//            .shadow(shape = RoundedCornerShape(16.dp), elevation = 10.02.dp)
+//            .padding(bottom = 5.dp)
+//            .fillMaxWidth()
+//            .clickable(onClick = {navController.navigate(Destination.FoodDescription.route) }),
+//        shape = RoundedCornerShape(corner = CornerSize(16.dp)),
+//
+//        ) {
+//
+//        Row(
+//            modifier = Modifier.background(color = AppTheme.colors.background)
+//        ) {
+//            MenuItemImage(menuItemId)
+//            Column(
+//                modifier = Modifier
+//                    .padding(3.dp)
+//                    .fillMaxWidth()
+//                    .align(Alignment.CenterVertically)
+//
+//            ) {
+//                Text(
+//                    text = " ${menuItem!!.name}",
+//                    style = TextStyle(
+//                        fontStyle = FontStyle.Italic,
+//                        fontSize = 16.sp,
+//                        fontWeight = FontWeight.Bold
+//                    )
+//                )
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    modifier = Modifier.padding(3.dp),
+//                ) {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        modifier = Modifier.padding(3.dp),
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Filled.Star,
+//                            contentDescription = "Star icon",
+//                            tint = AppTheme.colors.secondarySurface, // Change the icon color
+//                            modifier = Modifier.size(24.dp) // Change the icon size
+//                        )
+//                        Text(
+//                            text = " ${menuItem.average_rating}",
+//                            style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp)
+//                        )
+//                        //Text(text = " ${menuItem.price}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
+//                    }
+//                    Spacer(modifier = Modifier.size(30.dp))
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        modifier = Modifier.padding(3.dp),
+//                    ) {
+//                        Text(
+//                            text = "$",
+//                            style = TextStyle(
+//                                fontStyle = FontStyle.Italic,
+//                                fontWeight = FontWeight.Bold,
+//                                fontSize = 18.sp,
+//                                color = orange
+//                            )
+//                        )
+//                        //Text(text = " ${menuItem.averageRating}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
+//                        Text(
+//                            text = " ${menuItem.price}",
+//                            style = TextStyle(
+//                                fontStyle = FontStyle.Italic,
+//                                fontWeight = FontWeight.Bold,
+//                                fontSize = 18.sp,
+//                                color = orange
+//                            )
+//                        )
+//                    }
+//                }
+////
+//                Row(
+//                    horizontalArrangement = Arrangement.End,
+//                    modifier = Modifier
+//                        .padding(3.dp)
+//                        .fillMaxWidth(),
+//                ) {
+//                    CircularAddButton(
+//                        onClick = { /*TODO*/ },
+//                        content = "+",
+//                        contentColor = Color.White,
+//                        buttonColor = AppTheme.colors.actionSurface,
+//                        size = 50
+//                    )
+//                }
+//
+//            }
+//
+//        }
+//    }
+//}

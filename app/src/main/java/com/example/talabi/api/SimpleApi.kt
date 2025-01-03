@@ -25,6 +25,11 @@ interface SimpleApi {
     @GET("/api/menu_items")
     suspend fun getMenu(): Response<List<Menu>>
 
+
+        @GET("/api/restaurants/{id}/menu_items")
+        suspend fun getMenuItemsByRestaurantId(@Path("id") id: String): Response<List<Menu>>
+
+
     @GET("/api/users/{postNumber}")
     suspend fun getPost2(
         @Path("postNumber") number: Int

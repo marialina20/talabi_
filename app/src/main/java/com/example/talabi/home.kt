@@ -369,10 +369,7 @@ fun NearRestaurantsList(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
-                    .clickable {
-                        // Navigate to restaurant details or menu page
-                        navController.navigate(Destination.RestaurantMenu.route)
-                    },
+                    .clickable { navController.navigate("restaurantMenu/${restaurant.id}") },
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(3.dp) // Add shadow
             ) {

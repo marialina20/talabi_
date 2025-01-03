@@ -1,45 +1,28 @@
 package com.example.talabi
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,90 +33,156 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.talabi.Composants.CircularAddButton
-import com.example.talabi.Composants.CirculedOutlineButton
 import com.example.talabi.Composants.DisplayRestaurantImage
-import com.example.talabi.Composants.DisplayoneMenuItem
 import com.example.talabi.Composants.MenuItemImage
-import com.example.talabi.Composants.SquareButton
 import com.example.talabi.api.RetrofitInstance
-import com.example.talabi.data.MenuItem
-import com.example.talabi.data.Restaurant
 import com.example.talabi.data.menuItems
-import com.example.talabi.data.restaurants
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.orange
-import com.example.talabi.ui.theme.white
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun DisplayRestaurantMenu(navController: NavHostController) {
+fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String) {
     val menu= remember { menuItems}
     Column (modifier = Modifier
-        .padding(vertical = 24.dp, horizontal = 8.dp)){
+        .padding(vertical = 24.dp, horizontal = 8.dp)) {
         DisplayRestaurantImage(restau_id = 1)
         Spacer(modifier = Modifier.height(12.dp))
-        Row (
+        Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
         }
-        var MenuList by remember { mutableStateOf<List<Menu>>(emptyList()) }
+        var menuList by remember { mutableStateOf<List<Menu>>(emptyList()) }
         val coroutineScope = rememberCoroutineScope()
 
-        LaunchedEffect(Unit) {
+        LaunchedEffect(restaurantId) {
             coroutineScope.launch {
                 try {
-                    val response = RetrofitInstance.api.getMenu()
+                    // Fetch menu items by restaurant ID
+                    val response = RetrofitInstance.api.getMenuItemsByRestaurantId(restaurantId)
                     if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        if (responseBody != null) {
-                            MenuList = responseBody  // Assign the list of restaurants to the state
-                            Log.d("NearRestaurants", "Data fetched successfully: $MenuList")
-                        } else {
-                            Log.e("NearRestaurants", "Empty response body")
-                        }
+                        menuList = response.body() ?: emptyList()
                     } else {
-                        Log.e("NearRestaurants", "Error fetching data: ${response.errorBody()?.string()}")
+                        Log.e("RestaurantMenuScreen", "Error: ${response.code()}")
+                        Log.e("iddddddddddddddddddddd", "Error: ${restaurantId}")
                     }
                 } catch (e: Exception) {
-                    Log.e("NearRestaurants", "Error: ${e.localizedMessage}")
+                    Log.e("RestaurantMenuScreen", "Error fetching menu: ${e.localizedMessage}")
                 }
             }
         }
-        //Text(text = "Check our famous Restaurants :",style= TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold))
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-            modifier = Modifier.padding(WindowInsets.navigationBars.asPaddingValues())
+
+        LazyColumn {
+            items(menuList) { menuItem ->
+                Card(
+        modifier = Modifier
+            .shadow(shape = RoundedCornerShape(16.dp), elevation = 10.02.dp)
+            .padding(bottom = 5.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(corner = CornerSize(16.dp)),
+
+        ) {
+
+        Row(
+            modifier = Modifier.background(color = AppTheme.colors.background)
+        ) {
+            MenuItemImage(menuItem.id)
+            Column(
+                modifier = Modifier
+                    .padding(3.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
 
             ) {
-            items(
-
-                items = MenuList,
-                itemContent = {
-                    DisplayoneMenuItem(MenuList,menuItemId = it.restaurant_id,navController)
+                Text(
+                    text = " ${menuItem!!.name}",
+                    style = TextStyle(
+                        fontStyle = FontStyle.Italic,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(3.dp),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(3.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Star icon",
+                            tint = AppTheme.colors.secondarySurface, // Change the icon color
+                            modifier = Modifier.size(24.dp) // Change the icon size
+                        )
+                        Text(
+                            text = " ${menuItem.average_rating}",
+                            style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp)
+                        )
+                        //Text(text = " ${menuItem.price}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
+                    }
+                    Spacer(modifier = Modifier.size(30.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(3.dp),
+                    ) {
+                        Text(
+                            text = "$",
+                            style = TextStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                color = orange
+                            )
+                        )
+                        //Text(text = " ${menuItem.averageRating}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
+                        Text(
+                            text = " ${menuItem.price}",
+                            style = TextStyle(
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                color = orange
+                            )
+                        )
+                    }
+                }
+//
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .padding(3.dp)
+                        .fillMaxWidth(),
+                ) {
+                    CircularAddButton(
+                        onClick = { /*TODO*/ },
+                        content = "+",
+                        contentColor = Color.White,
+                        buttonColor = AppTheme.colors.actionSurface,
+                        size = 50
+                    )
                 }
 
-            )
+            }
 
         }
     }
-}
+            }
+        }
+    }}
 
 
 

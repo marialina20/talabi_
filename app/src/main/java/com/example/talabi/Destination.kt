@@ -2,7 +2,9 @@ package com.example.talabi
 
 
 sealed class Destination(val route:String) {
-    object RestaurantMenu:Destination("RestaurantMenu")
+    object RestaurantMenu:Destination("RestaurantMenu"){
+        const val routed = "restaurant_menu/{restaurantId}"
+    }
     object FoodDescription:Destination("FoodDescription") {
         /*fun getDestination(id:Int):String {
             return this.route.replace("{idUser}",id.toString())
