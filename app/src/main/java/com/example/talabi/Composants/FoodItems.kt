@@ -186,8 +186,6 @@ fun DisplayoneCarditem(menuItemId: Int) {
 @Composable
 fun DisplayoneMenuItem(menuList: List<Menu>,menuItemId: Int,navController: NavHostController) {
 
-
-
     val menuItem = menuList.find { it.restaurant_id == menuItemId }
     Card(
         modifier = Modifier

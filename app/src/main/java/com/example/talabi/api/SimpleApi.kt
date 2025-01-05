@@ -4,6 +4,7 @@ import com.example.talabi.LoginResponse
 import com.example.talabi.Loginclass
 import com.example.talabi.Menu
 import com.example.talabi.Restaurant
+import com.example.talabi.data.Orders
 import com.example.talabi.model.Post
 import retrofit2.Call
 import retrofit2.Response
@@ -55,7 +56,19 @@ interface SimpleApi {
         @Body logg: Loginclass
     ): Response<LoginResponse>
 
-
+    @FormUrlEncoded
+    @POST("orders")
+    suspend fun pushOrders(
+        @Field("id") id: String,
+        @Field("userId") userId: Int,
+        @Field("restaurantId") restaurantId: String,
+        @Field("deliveryAddress") deliveryAddress: String,
+        @Field("status") status: String,
+        @Field("totalPrice") totalPrice: String,
+        @Field("deliveryNotes") deliveryNotes: String,
+        @Field("createdAt") createdAt: String,
+        @Field("updatedAt") updatedAt: String
+    ): Response<Orders>
 
 
 
