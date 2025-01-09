@@ -33,5 +33,14 @@ enum class OrderStatus(val value: String) {
     }
 }
 data class CartTotalResponse(
-    val total: Double
+    val total: Double,
+    val id: Int? = null,
+    val userId: Int,
+    val restaurantId: Int,
+    val deliveryAddress: String,
+    val status: OrderStatus,
+    val totalPrice: Double,
+    val deliveryNotes: String? = null,
+    val createdAt: String? = null,
+    val updatedAt: String? = null
 )

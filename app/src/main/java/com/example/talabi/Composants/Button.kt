@@ -54,7 +54,7 @@ import com.example.talabi.ui.theme.white
 
 @Composable
 fun CircularAddButton(
-    onClick: () -> Unit,
+    onClick: @Composable () -> Unit,
     buttonColor: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = white,
     content:String,

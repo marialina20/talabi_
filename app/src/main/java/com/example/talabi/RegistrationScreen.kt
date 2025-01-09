@@ -7,6 +7,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.clickable
 import android.app.Activity
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -27,8 +28,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import androidx.compose.ui.platform.LocalContext
+import com.example.talabi.api.RetrofitInstance
+import com.example.talabi.model.Post
 import com.example.talabi.ui.theme.orange
 import com.example.talabi.ui.theme.white
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit)  {
@@ -42,6 +49,9 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
     var emailError by remember { mutableStateOf<String?>(null) }
     var phoneNumberError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
+    var emailAlreadyUsedError by remember { mutableStateOf<String?>(null) }
+    var registrationSuccess by remember { mutableStateOf(false) }
+
 
     // Google Sign-In setup
     val RC_SIGN_IN = 9001
@@ -147,11 +157,18 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
-            isError = emailError != null
+            isError = emailError != null || emailAlreadyUsedError != null
         )
         if (emailError != null) {
             Text(
-                text = emailError!!,
+                text = usernameError!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+        if (emailAlreadyUsedError != null) {
+            Text(
+                text = "This email is already used",
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -218,6 +235,7 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
             )
         }
 
+
         // Google Sign-In clickable text
         Text(
             text = "Sign Up with Google",
@@ -243,6 +261,11 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email.value).matches()) {
                     emailError = "Please enter a valid email address"
                     isValid = false
+
+                }
+                if (emailAlreadyUsedError != null) {
+                    emailError = "Email address already used "
+
                 }
 
                 if (phoneNumber.value.isEmpty() || !android.util.Patterns.PHONE.matcher(phoneNumber.value).matches()) {
@@ -256,24 +279,80 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
                 }
 
                 if (isValid) {
-                    // Handle registration logic
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val api = RetrofitInstance.api
+                            val newUser = Post(
+                                userId = 0, // Assign 0 if ID is auto-generated
+                                name = username.value,
+                                email = email.value,
+                                phone = phoneNumber.value,
+                                password = password.value
+                            )
+                            val response = api.pushPost(newUser)
+                            withContext(Dispatchers.Main) {
+                                if (response.isSuccessful) {
+                                    registrationSuccess = true
+
+                                } else {
+                                    if (response.code() == 409) { // Vérifiez le code 409 pour "Conflict"
+                                        emailAlreadyUsedError = 1.toString()
+                                        Log.e("erroooooooooor email", "Error fetching data: ${response.errorBody()?.string()}")
+                                    }
+                                }
+
+                                }
+
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+
+                            }
+                        }
+
                 }
+                    }
             },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = orange, // Default background color
-                contentColor = white, // Text color
-                disabledContainerColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) // Disabled state color
-            ),
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = orange, contentColor = white),
             shape = RoundedCornerShape(4.dp)
         ) {
             Text(text = "Sign Up")
         }
+
         Text(
             text = "Back to Login",
             color = orange,
             modifier = Modifier.clickable { onNavigateBack() }
         )
     }
+
+
+
 }
+
+//private fun signUpUser(username: String, email: String, phone: String, password: String) {
+//    CoroutineScope(Dispatchers.IO).launch {
+//        try {
+//            val api = RetrofitInstance.api
+//            val newUser = Post(
+//                userId = 0, // Assign 0 if ID is auto-generated
+//                name = username,
+//                email = email,
+//                phone = phone,
+//                password = password
+//            )
+//            val response = api.pushPost(newUser)
+//            withContext(Dispatchers.Main) {
+//                if (response.isSuccessful) {
+//
+//                } else {
+//
+//                }
+//            }
+//        } catch (e: Exception) {
+//            withContext(Dispatchers.Main) {
+//
+//            }
+//        }
+//    }
+//}

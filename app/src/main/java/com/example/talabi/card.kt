@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.util.Log
 import android.widget.Toast
@@ -71,6 +72,7 @@ import com.example.talabi.data.UpdateNotesRequest
 import com.example.talabi.data.UpdateOrderItemRequest
 import com.example.talabi.data.UpdateQuantityRequest
 import com.example.talabi.ui.theme.AppTheme
+import com.example.talabi.ui.theme.blue
 import com.example.talabi.ui.theme.gray
 import com.example.talabi.ui.theme.gray2
 import com.example.talabi.ui.theme.orange
@@ -83,6 +85,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun DisplayCardItems(navController: NavHostController,
                      sharedViewModel: SharedViewModel
@@ -96,19 +99,19 @@ fun DisplayCardItems(navController: NavHostController,
 //        specialNotes = if (specialNotes.isNotBlank()) specialNotes else null
 //    )
     //var numberofItem = 0
-    val orderId = sharedViewModel.orderId.observeAsState()
+    val orderId = sharedViewModel.orderId
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
     val screenWidth = configuration.screenWidthDp
     val id = remember { mutableStateOf(0) }
-    var prixtotal :Double=0.0
+    var prixtotal :Double?=0.0
     var menuList by remember { mutableStateOf<List<MenuItems>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(orderId) {
         coroutineScope.launch {
             try {
                 // Fetch menu items by restaurant ID
-                val response = RetrofitInstance.api.getOrderItems(4)
+                val response = RetrofitInstance.api.getOrderItems(7)
                 if (response.isSuccessful) {
                     menuList = response.body() ?: emptyList()
                     Log.d("khaaaaaaayraaaaaaaa", "Error: ${menuList}")
@@ -133,9 +136,11 @@ fun DisplayCardItems(navController: NavHostController,
         )
         {
             Column(
+                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .padding(top = 4.dp)
                     .background(Color.Transparent)
+
             ) {
                // Spacer(modifier = Modifier.height(12.dp))
                 //Text(text = "Check our famous Restaurants :",style= TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold))
@@ -143,7 +148,7 @@ fun DisplayCardItems(navController: NavHostController,
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
                     modifier = Modifier
                         .padding(WindowInsets.navigationBars.asPaddingValues())
-                        .padding(bottom = 170.dp)
+                        .padding(bottom = 130.dp)
 
                     ) {
                     items(
@@ -241,6 +246,26 @@ fun DisplayCardItems(navController: NavHostController,
                                                             println("Failure: ${t.message}")
                                                         }
                                                     })
+                                                    LaunchedEffect(orderId) {
+                                                        coroutineScope.launch {
+                                                            try {
+                                                                val response = api.getCartTotal(orderId).execute() // Appel synchrone
+                                                                if (response.isSuccessful) {
+                                                                    var total =
+                                                                        response.body()?.total
+                                                                    prixtotal = total
+                                                                  //  Log.d("CartTotalScreen", "Total cart price: $total")
+                                                                } else {
+                                                                    Log.e("CartTotalScreen", "Failed: ${response.code()} - ${response.errorBody()?.string()}")
+                                                                }
+                                                            } catch (e: Exception) {
+                                                                Log.e("CartTotalScreen", "Error: ${e.localizedMessage}")
+                                                            }
+                                                        }
+                                                    }
+
+
+
 
                                                 },
                                                 content = "+",
@@ -373,6 +398,7 @@ fun DisplayCardItems(navController: NavHostController,
                     )
 
                 }
+                Spacer(modifier = Modifier.height(250.dp))
             }
             Card(
                 colors = CardDefaults.cardColors(
@@ -384,19 +410,20 @@ fun DisplayCardItems(navController: NavHostController,
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     //.padding(WindowInsets.navigationBars.asPaddingValues())
-                    .padding(bottom = 90.dp)
-                    .background(white.copy(0.7f),)
+                    .padding(bottom = 90.dp, top = 30.dp)
+                    .background(white.copy(0.1f),)
                         ,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(topEnd = 32.dp, topStart = 32.dp)
 
             )
             {
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier
-                        .padding(bottom = 30.dp)
+                        .padding(bottom = 30.dp, top = 15.dp)
                         .fillMaxWidth()
-                        .background(white.copy(0.7f),)
+                        .background(white.copy(0.7f),),
+
                 ) {
 
 
@@ -443,26 +470,30 @@ fun DisplayCardItems(navController: NavHostController,
                                 fontSize = 18.sp,
                                 color = orange
                             ))
-                        fun getCartTotal(orderId: Int) {
-                            api.getCartTotal(orderId).enqueue(object : Callback<CartTotalResponse> {
-                                override fun onResponse(
-                                    call: Call<CartTotalResponse>,
-                                    response: Response<CartTotalResponse>
-                                ) {
-                                    if (response.isSuccessful) {
-                                        val total = response.body()?.total ?: 0.0
-                                        println("Success: Total cart price is $total")
-                                    } else {
-                                        println("Failed: ${response.code()} - ${response.errorBody()?.string()}")
-                                    }
-                                }
 
-                                override fun onFailure(call: Call<CartTotalResponse>, t: Throwable) {
-                                    println("Error: ${t.message}")
-                                }
-                            })
-                        }
-                        var prixtotal=getCartTotal(7)
+
+
+
+//                        fun getCartTotal(orderId: Int) {
+//                            api.getCartTotal(orderId).enqueue(object : Callback<CartTotalResponse> {
+//                                override fun onResponse(
+//                                    call: Call<CartTotalResponse>,
+//                                    response: Response<CartTotalResponse>
+//                                ) {
+//                                    if (response.isSuccessful) {
+//                                         prixtotale = response.body()!!.total
+//                                     //   println("Success: Total cart price is $total")
+//                                    } else {
+//                                        println("Failed: ${response.code()} - ${response.errorBody()?.string()}")
+//                                    }
+//                                }
+//
+//                                override fun onFailure(call: Call<CartTotalResponse>, t: Throwable) {
+//                                    println("Error: ${t.message}")
+//                                }
+//                            })
+//                        }
+
                         Text(
                             text = "${prixtotal}$",
                             style = TextStyle(
@@ -517,17 +548,4 @@ fun DisplayCardItems(navController: NavHostController,
 
 }
 
-@Composable
-fun QuantitySelector(
-    orderitem:MenuItems,
-    sharedViewModel: SharedViewModel,
-    initialQuantity: Int = 1,
-    onQuantityChange: (Int) -> Unit
-) {
-    val orderId = sharedViewModel.orderId.observeAsState()
-    var quantity by remember { mutableStateOf(initialQuantity) }
-    val coroutineScope = rememberCoroutineScope()
 
-
-
-}
