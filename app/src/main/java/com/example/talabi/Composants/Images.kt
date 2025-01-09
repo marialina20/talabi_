@@ -35,15 +35,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.talabi.ui.theme.orange
 import com.example.talabi.ui.theme.white
-
+import coil.compose.AsyncImage
 
 @Composable
-fun MenuItemImage(menuItemid: Int,imagesize:Int= 100){
-    val menuItem= getMenuItemById(id = menuItemid)
+fun MenuItemImage(image: String,imagesize:Int= 100){
+   // val menuItem= getMenuItemById(id = menuItemid)
     Box (
         //modifier = Modifier.background(AppTheme.colors.onBackground)
     ){
-        Image(painter = painterResource(id = menuItem!!.image), contentDescription = null,
+        AsyncImage(
+            model = image, contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .padding(8.dp)
@@ -67,12 +68,14 @@ fun MenuItemImage(menuItemid: Int,imagesize:Int= 100){
     }
 }
 @Composable
-fun CardItemImage(menuItemid: Int){
-    val menuItem= getMenuItemById(id = menuItemid)
+fun CardItemImage(image:String ){
+   // val menuItem= getMenuItemById(id = menuItemid)
     Box (
         //modifier = Modifier.background(AppTheme.colors.onBackground)
     ){
-        Image(painter = painterResource(id = menuItem!!.image), contentDescription = null,
+        AsyncImage(
+            model = image,
+             contentDescription = null,
             contentScale  = ContentScale.Crop,
             modifier = Modifier
                 .padding(8.dp)
@@ -166,5 +169,35 @@ fun DescriptionItemImage(menuItemid: Int,imagesize:Int= 100){
 
         }
 
+    }
+}
+@Composable
+fun RestaurantMenuItemImage(image: String,imagesize:Int= 130){
+    // val menuItem= getMenuItemById(id = menuItemid)
+    Box (
+        //modifier = Modifier.background(AppTheme.colors.onBackground)
+    ){
+        AsyncImage(
+            model = image, contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .padding(8.dp)
+                .size(imagesize.dp)
+                .clip(RoundedCornerShape(corner = CornerSize(16.dp))))
+//        Row (
+//            modifier = Modifier.offset(x=75.dp,y=20.dp),
+//            //horizontalArrangement = Arrangement.End
+//
+//        ){
+//            FavoriteCirculedOutlineButton(
+//                imageVector = Icons.Filled.Favorite,
+//                sizeButton = 30,
+//                sizeIcon = 20,
+//                containerColor = Color(0xfFf1ebe9),
+//                borderStroke = 0.001f,
+//                borderColor = white,
+//            )
+//
+//        }
     }
 }

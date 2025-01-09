@@ -3,16 +3,28 @@ package com.example.talabi.api
 import com.example.talabi.LoginResponse
 import com.example.talabi.Loginclass
 import com.example.talabi.Menu
+import com.example.talabi.OrderResponse
 import com.example.talabi.Restaurant
+import com.example.talabi.data.ApiResponse
+import com.example.talabi.data.CartTotalResponse
+import com.example.talabi.data.MenuItems
+import com.example.talabi.data.OrderItem
 import com.example.talabi.data.Orders
+import com.example.talabi.data.RemoveItemRequest
+import com.example.talabi.data.RemoveItemResponse
+import com.example.talabi.data.UpdateNotesRequest
+import com.example.talabi.data.UpdateOrderItemResponse
+import com.example.talabi.data.UpdateQuantityRequest
 import com.example.talabi.model.Post
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -78,8 +90,24 @@ interface SimpleApi {
         @Field("createdAt") createdAt: String,
         @Field("updatedAt") updatedAt: String
     ): Response<Orders>
+    @POST("/api/add-to-order")
+    suspend fun addToOrder(@Body orderRequest: OrderItem): Response<OrderResponse>
+    @GET("/api/order-items/{orderId}")
+    suspend fun getOrderItems(@Path("orderId") orderId: Int): Response<List<MenuItems>>
 
+    @PUT("/api/update-order-quantity")
+    fun updateOrderQuantity(
+        @Body request: UpdateQuantityRequest
+    ): Call<ApiResponse>
 
+    @PUT("/api/update-order-notes")
+    fun updateOrderNotes(
+        @Body request: UpdateNotesRequest
+    ): Call<ApiResponse>
+    @DELETE("cart/remove/{orderItemId}")
+    suspend fun removeItemFromCart(@Path("orderItemId") orderItemId: Int): Response<ApiResponse>
 
+    @GET("/api/cart/total/{orderId}")
+    fun getCartTotal(@Path("orderId") orderId: Int): Call<CartTotalResponse>
 
 }

@@ -22,7 +22,7 @@ data class Loginclass(
 data class Restaurant(
     val id: Int,
     val name: String,
-    val logo: String?,  // Nullable because logo can be null
+    val logo: String,  // Nullable because logo can be null
     val address: String,
     val location: Location,
     val cuisine_type: String,
@@ -50,10 +50,14 @@ data class Menu(
     val restaurant_id: Int,
     val name: String,
     val description: String,  // Nullable because logo can be null
-    val image: String?,
+    val image: String,
     val price: String,
     val availability_status: Int,
     val average_rating: Double
 
+)
+data class OrderResponse(
+    val message: String,
+    val orderId: Int
 )
 

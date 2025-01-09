@@ -42,6 +42,8 @@ import com.example.talabi.R
 import androidx.compose.runtime.*
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import coil.compose.AsyncImage
+import com.example.talabi.Composants.RestaurantMenuItemImage
 import com.example.talabi.Menu
 import com.example.talabi.Restaurant
 import com.example.talabi.api.RetrofitInstance
@@ -371,16 +373,20 @@ fun NearRestaurantsList(navController: NavController) {
     }
 
     LazyColumn(
+        contentPadding = PaddingValues(horizontal = 1.dp, vertical = 12.dp),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(WindowInsets.navigationBars.asPaddingValues())
+            .padding(bottom = 50.dp)
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 16.dp)
     ) {
         items(restaurantList) { restaurant ->
             Card(
                 shape = RoundedCornerShape(30.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 8.dp, horizontal = 8.dp)
                     .clickable { navController.navigate("restaurantMenu/${restaurant.id}") },
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(3.dp) // Add shadow
@@ -393,14 +399,15 @@ fun NearRestaurantsList(navController: NavController) {
                 ) {
                     // Assuming the image is stored in a drawable or URL for each restaurant
                     val imageRes = R.drawable.drink // Replace with actual logic to load image
-                    Image(
-                        painter = painterResource(id = imageRes),
-                        contentDescription = "Restaurant Image",
-                        modifier = Modifier
-                            .fillMaxHeight() // Ensures image takes full height
-                            .width(120.dp) // Adjust width as needed
-                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
-                    )
+                    RestaurantMenuItemImage(restaurant.logo)
+//                    AsyncImage(
+//                        model = restaurant.logo,
+//                        contentDescription = "Restaurant Image",
+//                        modifier = Modifier
+//                            .fillMaxHeight() // Ensures image takes full height
+//                            .width(120.dp) // Adjust width as needed
+//                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
+//                    )
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(
                         verticalArrangement = Arrangement.spacedBy(4.dp), // Adds spacing between lines
@@ -633,8 +640,8 @@ fun CategoriesScreen(id : String, navController: NavController) {
                 ) {
                     // Assuming the image is stored in a drawable or URL for each restaurant
                     val imageRes = R.drawable.drink // Replace with actual logic to load image
-                    Image(
-                        painter = painterResource(id = imageRes),
+                    AsyncImage(
+                        model = restaurant.logo,
                         contentDescription = "Restaurant Image",
                         modifier = Modifier
                             .fillMaxHeight() // Ensures image takes full height

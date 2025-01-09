@@ -1,6 +1,8 @@
 package com.example.talabi
 
+import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,21 +40,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.privacysandbox.tools.core.model.Types.unit
 import com.example.talabi.Composants.CircularAddButton
 import com.example.talabi.Composants.DisplayRestaurantImage
 import com.example.talabi.Composants.MenuItemImage
 import com.example.talabi.api.RetrofitInstance
+import com.example.talabi.data.OrderItem
 import com.example.talabi.data.menuItems
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.orange
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String) {
+fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String, sharedViewModel: SharedViewModel) {
+    val userId = 9 // Exemple d'ID utilisateur
+    val menuItemId = 8
+    val quantity = 4
+    val specialNotes = "nnnnnnnn "
+    val message = remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
     val menu= remember { menuItems}
     Column (modifier = Modifier
         .padding(vertical = 24.dp, horizontal = 8.dp)) {
@@ -84,7 +99,11 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
             }
         }
 
-        LazyColumn {
+        LazyColumn ( contentPadding = PaddingValues(horizontal = 1.dp, vertical = 6.dp),
+            modifier = Modifier
+                .padding(WindowInsets.navigationBars.asPaddingValues())
+                .padding(bottom = 30.dp)){
+
             items(menuList) { menuItem ->
                 Card(
         modifier = Modifier
@@ -98,21 +117,24 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
         Row(
             modifier = Modifier.background(color = AppTheme.colors.background)
         ) {
-            MenuItemImage(menuItem.id)
+            MenuItemImage(menuItem.image)
             Column(
                 modifier = Modifier
-                    .padding(3.dp)
+                  //  .padding(1.dp)
                     .fillMaxWidth()
                     .align(Alignment.CenterVertically)
 
             ) {
+               // Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = " ${menuItem!!.name}",
+                    modifier = Modifier.padding(1.dp),
+                    text = " ${menuItem.name}",
                     style = TextStyle(
                         fontStyle = FontStyle.Italic,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
+
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -160,6 +182,8 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                         )
                     }
                 }
+
+
 //
                 Row(
                     horizontalArrangement = Arrangement.End,
@@ -168,7 +192,36 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                         .fillMaxWidth(),
                 ) {
                     CircularAddButton(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+
+                            Log.e("iddddddddddddddddddddd", "Error: ${restaurantId}")
+                            CoroutineScope(Dispatchers.IO).launch {
+                                try {
+
+                                    val newUser = OrderItem(
+                                        userId = 2,           // Remplacez `orderId` par `userId`
+                                        menuItemId = menuItem.id,
+                                        quantity = 1,         // Assurez-vous qu'une valeur > 0 est utilisée
+                                        specialNotes = ""
+                                    )
+                                    val response = RetrofitInstance.api.addToOrder(newUser)
+                                    withContext(Dispatchers.Main) {
+                                        if (response.isSuccessful) {
+                                            sharedViewModel.setOrderId(response.body()!!.orderId)
+                                            Log.e("truuuuuuuuuuuuuuuuuuuuuuuu", "Error: ${response.body()!!.orderId}")
+
+                                        } else {
+                                            Log.e("faaaaaaaaaaaaaaaaaaaalse", "Error: ${response.code()}")
+
+                                        }
+                                    }
+                                } catch (e: Exception) {
+
+                                }
+                            }
+
+
+                        },
                         content = "+",
                         contentColor = Color.White,
                         buttonColor = AppTheme.colors.actionSurface,
@@ -183,6 +236,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
             }
         }
     }}
+
 
 
 

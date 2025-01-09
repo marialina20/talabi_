@@ -12,6 +12,46 @@ data class MenuItem(
     val availabilityStatus: Boolean,
     val averageRating: Float,
 )
+data class MenuItems(
+    val order_item_id: Int,
+    val item_id: Int,
+    val item_image :String,
+    val item_name: String,
+    val item_price: Double,
+    val quantity: Int =1
+)
+data class UpdateOrderItemRequest(
+    val orderItemId: Int,
+    val quantity: Int = 1,
+    val specialNotes: String? = null
+)
+
+data class UpdateOrderItemResponse(
+    val message: String
+)
+
+data class UpdateQuantityRequest(
+    val orderItemId: Int,
+    val quantity: Int
+)
+
+data class UpdateNotesRequest(
+    val orderItemId: Int,
+    val specialNotes: String
+)
+
+data class ApiResponse(
+    val message: String
+)
+data class RemoveItemRequest(
+    val orderItemId: Int
+)
+
+data class RemoveItemResponse(
+    val message: String
+)
+
+
 val menuItems = listOf(
     MenuItem(1, 1, "Spaghetti Carbonara", "Classic Italian pasta with creamy sauce", 12.99, R.drawable.img7, true,4.5f),
     MenuItem(2, 1, "Margherita Pizza", "Wood-fired pizza with fresh mozzarella and basil", 9.99, R.drawable.img8, true,4.5f),

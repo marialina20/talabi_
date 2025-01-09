@@ -51,7 +51,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.talabi.Composants.ExtendedButton
 import com.example.talabi.Composants.TopBar
-import com.example.talabi.Composants.getOrderById
+//import com.example.talabi.Composants.getOrderById
 import com.example.talabi.Composants.getUserById
 import com.example.talabi.ui.theme.gray
 import com.example.talabi.ui.theme.gray2
@@ -65,7 +65,7 @@ fun DisplayPayementInfo(userid: Int,orderid: Int,navController: NavHostControlle
     var showOrderValid = remember { mutableStateOf(false) }
     var blur=0
     var user= getUserById(id = userid)
-    var order = getOrderById(id = orderid)
+   // var order = getOrderById(id = orderid)
     var note = remember {
         mutableStateOf(TextFieldValue())
     }

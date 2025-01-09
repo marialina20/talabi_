@@ -74,6 +74,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -98,6 +99,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             AppTheme {
                 val navController= rememberNavController()
 
@@ -126,6 +128,8 @@ class MainActivity : ComponentActivity() {
 fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifier) {
     val selectedLanguage = remember { mutableStateOf("Francais") }
 
+    val sharedViewModel: SharedViewModel = viewModel()
+
     NavHost(navController=navController, startDestination= Destination.home.route
 
     ) {
@@ -143,12 +147,12 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
             arguments = listOf(navArgument("restaurantId") { type = NavType.StringType })
         ) { backStackEntry ->
             val restaurantId = backStackEntry.arguments?.getString("restaurantId") ?: ""
-            DisplayRestaurantMenu(navController, restaurantId = restaurantId)
+            DisplayRestaurantMenu(navController, restaurantId = restaurantId, sharedViewModel)
         }
         composable(Destination.FoodDescription.route) {
             DisplayItemDiscreption(menuItemid = 7, navController =navController )
         }
-        composable(Destination.Card.route) { DisplayCardItems(navController) }
+        composable(Destination.Card.route) { DisplayCardItems(navController, sharedViewModel) }
         composable(Destination.Notification.route) { NotifListt() }
         composable(Destination.PayementandAddress.route) { DisplayPayementInfo(userid = 1, orderid = 1,navController) }
         composable(Destination.LieuPage.route) { DisplayLieuPage(navController) }

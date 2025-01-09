@@ -1,10 +1,9 @@
 package com.example.talabi.data
 
 data class OrderItem(
-    val id: Int? = null, // Nullable, car il est auto-incrémenté par la base de données
-    val orderId: Int,    // Clé étrangère vers la table orders
-    val menuItemId: Int, // Clé étrangère vers la table menu_items
-    val quantity: Int,   // Quantité de l'article commandé
+    val userId: Int,         // Pas `orderId` !
+    val menuItemId: Int,
+    val quantity: Int,
     val specialNotes: String? = null // Notes spéciales, optionnel
 )
 data class Orders(
@@ -18,6 +17,7 @@ data class Orders(
     val createdAt: String? = null, // Timestamp de création
     val updatedAt: String? = null  // Timestamp de mise à jour
 )
+
 enum class OrderStatus(val value: String) {
     PENDING("pending"),
     PREPARING("preparing"),
@@ -32,3 +32,6 @@ enum class OrderStatus(val value: String) {
         }
     }
 }
+data class CartTotalResponse(
+    val total: Double
+)
