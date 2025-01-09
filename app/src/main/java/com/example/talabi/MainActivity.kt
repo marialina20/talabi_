@@ -62,14 +62,12 @@ package com.example.talabi
 // package com.example.talabi
 
 import DisplayCardItems
-import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -77,12 +75,12 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import androidx.privacysandbox.tools.core.model.Type
+import androidx.navigation.navArgument
 import com.example.ahlem.CategoriesScreen
 import com.example.ahlem.HomeScreen
-import com.example.ahlem.MainScreeen
 import com.example.ahlem.MoreRestaurantsScreen
 import com.example.ahlem.RestaurantDetailsScreen
 import com.example.ahlem.SearchScreen
@@ -133,7 +131,20 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
     ) {
 
 
-        composable(Destination.RestaurantMenu.route) { DisplayRestaurantMenu(navController) }
+        //composable(Destination.RestaurantMenu.route) { DisplayRestaurantMenu(navController) }
+//        composable(
+//            route = Destination.RestaurantMenu.route,
+//
+//        ) {
+//            DisplayRestaurantMenu(navController, restaurantId = 2)
+//        }
+        composable(
+            "restaurantMenu/{restaurantId}",
+            arguments = listOf(navArgument("restaurantId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val restaurantId = backStackEntry.arguments?.getString("restaurantId") ?: ""
+            DisplayRestaurantMenu(navController, restaurantId = restaurantId)
+        }
         composable(Destination.FoodDescription.route) {
             DisplayItemDiscreption(menuItemid = 7, navController =navController )
         }
@@ -143,7 +154,14 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
         composable(Destination.LieuPage.route) { DisplayLieuPage(navController) }
         composable(Destination.home.route) { HomeScreen(navController) }
         composable(Destination.search.route) { SearchScreen() }
-        composable(Destination.categories.route) { CategoriesScreen() }
+        composable(
+            route = "categories/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val restaurantId = backStackEntry.arguments?.getString("id") ?: ""
+            CategoriesScreen(id = restaurantId,navController)
+        }
+
         composable(Destination.restaurant_details.route) { RestaurantDetailsScreen() }
         composable(Destination.more.route) { MoreRestaurantsScreen() }
         composable(Destination.login.route) {
