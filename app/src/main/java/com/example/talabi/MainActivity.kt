@@ -12,58 +12,13 @@ package com.example.talabi
 //import kotlinx.coroutines.withContext
 //import retrofit2.Response
 //
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            LoginScreen(onLogin = { email, password ->
-//                loginUser(email, password)
-//            })
-//        }
-//    }
-//
-//    private fun loginUser(email: String, password: String) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val api = RetrofitInstance.api
-//                val credentials = Loginclass("ahlem@gmail.com", "ah12//()")
-//                val response: Response<LoginResponse> = api.loginUser(credentials)
-//
-//                withContext(Dispatchers.Main) {
-//                    if (response.isSuccessful && response.body() != null) {
-//                        val loginResponse = response.body()!!
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            "Login successful! Token: ${loginResponse.token}",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                        // Save token or navigate to the next screen
-//                    } else {
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            "Login failedddddddddd: ${response.errorBody()?.string()}",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                withContext(Dispatchers.Main) {
-//                    Toast.makeText(
-//                        this@MainActivity,
-//                        "Error: ${e.message}",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
-//        }
-//    }
-//}
 
-// package com.example.talabi
+
 
 import DisplayCardItems
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -131,13 +86,8 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
     ) {
 
 
-        //composable(Destination.RestaurantMenu.route) { DisplayRestaurantMenu(navController) }
-//        composable(
-//            route = Destination.RestaurantMenu.route,
-//
-//        ) {
-//            DisplayRestaurantMenu(navController, restaurantId = 2)
-//        }
+
+
         composable(
             "restaurantMenu/{restaurantId}",
             arguments = listOf(navArgument("restaurantId") { type = NavType.StringType })
@@ -267,70 +217,7 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
 //        }
 //    }
 //}
-//********************************signup*****************************************88
-//import androidx.compose.runtime.*
-//import com.example.talabi.api.RetrofitInstance
-//import kotlinx.coroutines.CoroutineScope
-//import kotlinx.coroutines.Dispatchers
-//import kotlinx.coroutines.launch
-//import kotlinx.coroutines.withContext
-//
-//class MainActivity : ComponentActivity() {
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            AppTheme {
-//                RegistrationnScreen(
-//                    modifier = Modifier,
-//                    onNavigateBack = { finish() },
-//                    onSignUp = { username, email, phone, password ->
-//                        signUpUser(username, email, phone, password)
-//                    }
-//                )
-//            }
-//        }
-//    }
-//
-//    private fun signUpUser(username: String, email: String, phone: String, password: String) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val api = RetrofitInstance.api
-//                val newUser = Post(
-//                    userId = 0, // Assign 0 if ID is auto-generated
-//                    name = username,
-//                    email = email,
-//                    phone = phone,
-//                    password = password
-//                )
-//                val response = api.pushPost(newUser)
-//                withContext(Dispatchers.Main) {
-//                    if (response.isSuccessful) {
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            "Sign up successful! Welcome, $username.",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    } else {
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            "Sign up failed: ${response.errorBody()?.string()}",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                withContext(Dispatchers.Main) {
-//                    Toast.makeText(
-//                        this@MainActivity,
-//                        "Error: ${e.message}",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
-//        }
-//    }
-//}
+
 //****************************login**********************************************
 
 

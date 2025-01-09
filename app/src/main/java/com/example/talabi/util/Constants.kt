@@ -2,7 +2,6 @@ package com.example.talabi.util
 
 class Constants {
     companion object{
-      //  const val BASE_URL = "https://jsonplaceholder.typicode.com"
-        const val BASE_URL = "https://3764-105-99-163-7.ngrok-free.app"
+        const val BASE_URL = "https://9ff8-105-111-179-202.ngrok-free.app"
     }
 }
