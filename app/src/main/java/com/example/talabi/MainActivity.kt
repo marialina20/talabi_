@@ -100,7 +100,7 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
             DisplayRestaurantMenu(navController, restaurantId = restaurantId, sharedViewModel)
         }
         composable(Destination.FoodDescription.route) {
-            DisplayItemDiscreption(menuItemid = 7, navController =navController )
+            DisplayItemDiscreption(menuItemid = 7, navController =navController ,sharedViewModel=sharedViewModel)
         }
         composable(Destination.Card.route) { DisplayCardItems(navController, sharedViewModel) }
         composable(Destination.Notification.route) { NotifListt() }
@@ -108,6 +108,10 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
         composable(Destination.LieuPage.route) { DisplayLieuPage(navController) }
         composable(Destination.home.route) { HomeScreen(navController) }
         composable(Destination.search.route) { SearchScreen() }
+        composable(Destination.fooddescription.route) { //DisplayItemDiscreption(navController=navController, menuItemid = 8)
+                navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("itemid")?.toInt()
+            DisplayItemDiscreption(navController=navController, menuItemid = id!!,sharedViewModel=sharedViewModel) }
         composable(
             route = "categories/{id}",
             arguments = listOf(navArgument("id") { type = NavType.StringType })

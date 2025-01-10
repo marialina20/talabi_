@@ -71,7 +71,6 @@ import com.example.talabi.data.RemoveItemResponse
 import com.example.talabi.data.UpdateNotesRequest
 import com.example.talabi.data.UpdateOrderItemRequest
 import com.example.talabi.data.UpdateQuantityRequest
-import com.example.talabi.data.menuItems
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.blue
 import com.example.talabi.ui.theme.gray
@@ -186,7 +185,8 @@ fun DisplayCardItems(navController: NavHostController,
                                             style = TextStyle(
                                                 fontStyle = FontStyle.Italic,
                                                 fontSize = 14.sp,
-                                                fontWeight = FontWeight.Bold
+                                                fontWeight = FontWeight.Bold,
+                                                color = blue
                                             )
                                         )
                                         Row(
@@ -281,7 +281,9 @@ fun DisplayCardItems(navController: NavHostController,
                                                 contentsize = 25
                                             )
                                             Spacer(modifier = Modifier.size(4.dp))
-                                            Text(text = "$quantity")
+                                            Text(text = "$quantity", style = TextStyle(color = blue)
+
+                                            )
                                             Spacer(modifier = Modifier.size(4.dp))
                                             CircularAddButton(
                                                 onClick = { if (quantity > 1) {
@@ -420,7 +422,7 @@ fun DisplayCardItems(navController: NavHostController,
 
                                             },
                                             containerColor = gray2,
-                                            contentColor = gray,
+                                            contentColor = blue,
                                             modifier = Modifier.size(40.dp)
                                         ) {
                                             Icon(Icons.Default.Delete, contentDescription = "")
@@ -494,7 +496,7 @@ fun DisplayCardItems(navController: NavHostController,
                                     fontStyle = FontStyle.Italic,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp,
-                                    color = gray
+                                    color = blue
                                 )
                             )
                         }
@@ -523,7 +525,7 @@ fun DisplayCardItems(navController: NavHostController,
                                 fontStyle = FontStyle.Italic,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
-                                color = gray
+                                color = blue
                             )
                         )
                     }}

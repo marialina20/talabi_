@@ -11,6 +11,7 @@ sealed class Destination(val route:String) {
         }*/
     }
     object Card:Destination("Card")
+    object Restaumenu:Destination("restaumenu")
     object Notification:Destination("Notification")
    // object Profil:Destination("Profil")
     object PayementandAddress:Destination("PayementandAddress")
@@ -25,5 +26,11 @@ sealed class Destination(val route:String) {
     object language:Destination("language")
     object settings:Destination("settings")
     object profile:Destination("profile")
+    object fooddescription:Destination("fooddescription/{itemid}"){
+        fun getDestination(id:Int):String {
+            return this.route.replace("{itemid}",id.toString())
+        }
+    }
+
 
 }
