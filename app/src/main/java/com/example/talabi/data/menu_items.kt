@@ -18,7 +18,8 @@ data class MenuItems(
     val item_image :String,
     val item_name: String,
     val item_price: Double,
-    val quantity: Int =1
+    val quantity: Int =1,
+    val item_special_notes: String
 )
 data class UpdateOrderItemRequest(
     val orderItemId: Int,
@@ -43,6 +44,7 @@ data class UpdateNotesRequest(
 data class ApiResponse(
     val message: String
 )
+
 data class RemoveItemRequest(
     val orderItemId: Int
 )

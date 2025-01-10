@@ -54,7 +54,7 @@ import com.example.talabi.ui.theme.white
 
 @Composable
 fun CircularAddButton(
-    onClick: @Composable () -> Unit,
+    onClick:  () -> Unit,
     buttonColor: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = white,
     content:String,
@@ -227,6 +227,7 @@ fun FavoriteCirculedOutlineButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditableTextDialog(
+    initialText :String ="no cucumber...",
     showDialog: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
@@ -311,9 +312,11 @@ fun DialogScreen() {
 //        }
 
         EditableTextDialog(
+            initialText = "additionalNote",
             showDialog = showDialog.value,
             onDismiss = { showDialog.value = false },
             onConfirm = { text ->
+
                 additionalNote.value = text
                 showDialog.value = false
             }

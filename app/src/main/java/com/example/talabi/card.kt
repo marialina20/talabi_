@@ -71,12 +71,14 @@ import com.example.talabi.data.RemoveItemResponse
 import com.example.talabi.data.UpdateNotesRequest
 import com.example.talabi.data.UpdateOrderItemRequest
 import com.example.talabi.data.UpdateQuantityRequest
+import com.example.talabi.data.menuItems
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.blue
 import com.example.talabi.ui.theme.gray
 import com.example.talabi.ui.theme.gray2
 import com.example.talabi.ui.theme.orange
 import com.example.talabi.ui.theme.white
+import com.google.protobuf.Api
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -104,14 +106,14 @@ fun DisplayCardItems(navController: NavHostController,
     val screenHeight = configuration.screenHeightDp
     val screenWidth = configuration.screenWidthDp
     val id = remember { mutableStateOf(0) }
-    var prixtotal :Double?=0.0
+    var prixtotal = remember { mutableStateOf(0.0)  }
     var menuList by remember { mutableStateOf<List<MenuItems>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(orderId) {
         coroutineScope.launch {
             try {
                 // Fetch menu items by restaurant ID
-                val response = RetrofitInstance.api.getOrderItems(7)
+                val response = RetrofitInstance.api.getOrderItems(4)
                 if (response.isSuccessful) {
                     menuList = response.body() ?: emptyList()
                     Log.d("khaaaaaaayraaaaaaaa", "Error: ${menuList}")
@@ -151,10 +153,8 @@ fun DisplayCardItems(navController: NavHostController,
                         .padding(bottom = 130.dp)
 
                     ) {
-                    items(
-
-                        items = menuList,
-                        itemContent = {
+                    items(menuList) { item ->
+//itemContent = {
                             //DisplayoneCarditem(menuItem = it)
                             Card(
 
@@ -172,7 +172,7 @@ fun DisplayCardItems(navController: NavHostController,
                                         .background(color = AppTheme.colors.background)
                                         .height(IntrinsicSize.Min)
                                 ) {
-                                     CardItemImage(it.item_image)
+                                     CardItemImage(item.item_image)
 
                                     Column(
                                         modifier = Modifier
@@ -182,7 +182,7 @@ fun DisplayCardItems(navController: NavHostController,
 
                                     ) {
                                         Text(
-                                            text = " ${it.item_name}",
+                                            text = " ${item.item_name}",
                                             style = TextStyle(
                                                 fontStyle = FontStyle.Italic,
                                                 fontSize = 14.sp,
@@ -207,9 +207,8 @@ fun DisplayCardItems(navController: NavHostController,
                                                         color = orange
                                                     )
                                                 )
-                                                //Text(text = " ${menuItem.averageRating}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
                                                 Text(
-                                                    text = " ${it.item_price}",
+                                                    text = " ${item.item_price}",
                                                     style = TextStyle(
                                                         fontStyle = FontStyle.Italic,
                                                         fontWeight = FontWeight.Bold,
@@ -231,41 +230,48 @@ fun DisplayCardItems(navController: NavHostController,
                                                 onClick = {
                                                     quantity++
                                                     val api = RetrofitInstance.api
-
-                                                    val updateQuantityRequest = UpdateQuantityRequest(orderItemId = it.order_item_id, quantity = quantity)
-                                                    api.updateOrderQuantity(updateQuantityRequest).enqueue(object : retrofit2.Callback<ApiResponse> {
-                                                        override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {
-                                                            if (response.isSuccessful) {
-                                                                println("Success: ${response.body()?.message}")
-                                                            } else {
-                                                                println("Error: ${response.errorBody()?.string()}")
-                                                            }
-                                                        }
-
-                                                        override fun onFailure(call: retrofit2.Call<ApiResponse>, t: Throwable) {
-                                                            println("Failure: ${t.message}")
-                                                        }
-                                                    })
-                                                    LaunchedEffect(orderId) {
-                                                        coroutineScope.launch {
-                                                            try {
-                                                                val response = api.getCartTotal(orderId).execute() // Appel synchrone
+                                                    coroutineScope.launch {
+                                                        val updateQuantityRequest =
+                                                            UpdateQuantityRequest(
+                                                                orderItemId = item.order_item_id,
+                                                                quantity = quantity
+                                                            )
+                                                        api.updateOrderQuantity(
+                                                            updateQuantityRequest
+                                                        ).enqueue(object :
+                                                            retrofit2.Callback<ApiResponse> {
+                                                            override fun onResponse(
+                                                                call: retrofit2.Call<ApiResponse>,
+                                                                response: retrofit2.Response<ApiResponse>
+                                                            ) {
                                                                 if (response.isSuccessful) {
-                                                                    var total =
-                                                                        response.body()?.total
-                                                                    prixtotal = total
-                                                                  //  Log.d("CartTotalScreen", "Total cart price: $total")
+                                                                    println("Success: ${response.body()?.message}")
                                                                 } else {
-                                                                    Log.e("CartTotalScreen", "Failed: ${response.code()} - ${response.errorBody()?.string()}")
+                                                                    println(
+                                                                        "Error: ${
+                                                                            response.errorBody()
+                                                                                ?.string()
+                                                                        }"
+                                                                    )
                                                                 }
-                                                            } catch (e: Exception) {
-                                                                Log.e("CartTotalScreen", "Error: ${e.localizedMessage}")
                                                             }
+
+
+                                                            override fun onFailure(
+                                                                call: retrofit2.Call<ApiResponse>,
+                                                                t: Throwable
+                                                            ) {
+                                                                println("Failure: ${t.message}")
+                                                            }
+                                                        })
+                                                        try{val response = api.getTotal(4)
+                                                            prixtotal.value = response.total
+                                                            Log.e("RestaurantMenuScreen", ": ${response}")
+                                                        } catch (e: Exception) {
+                                                            // Gérer les erreurs
+                                                            println("Failed to update total: ${e.message}")
                                                         }
                                                     }
-
-
-
 
                                                 },
                                                 content = "+",
@@ -279,25 +285,55 @@ fun DisplayCardItems(navController: NavHostController,
                                             Spacer(modifier = Modifier.size(4.dp))
                                             CircularAddButton(
                                                 onClick = { if (quantity > 1) {
-                                                    quantity--
                                                     val api = RetrofitInstance.api
+                                                    coroutineScope.launch {
+                                                            val updateQuantityRequest =
+                                                                UpdateQuantityRequest(
+                                                                    orderItemId = item.order_item_id,
+                                                                    quantity = quantity
+                                                                )
+                                                            api.updateOrderQuantity(
+                                                                updateQuantityRequest
+                                                            ).enqueue(object :
+                                                                retrofit2.Callback<ApiResponse> {
+                                                                override fun onResponse(
+                                                                    call: retrofit2.Call<ApiResponse>,
+                                                                    response: retrofit2.Response<ApiResponse>
+                                                                ) {
+                                                                    if (response.isSuccessful) {
+                                                                        println("Success: ${response.body()?.message}")
+                                                                    } else {
+                                                                        println(
+                                                                            "Error: ${
+                                                                                response.errorBody()
+                                                                                    ?.string()
+                                                                            }"
+                                                                        )
+                                                                    }
+                                                                }
 
-                                                    val updateQuantityRequest = UpdateQuantityRequest(orderItemId = it.order_item_id, quantity = quantity)
-                                                    api.updateOrderQuantity(updateQuantityRequest).enqueue(object : retrofit2.Callback<ApiResponse> {
-                                                        override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {
-                                                            if (response.isSuccessful) {
-                                                                println("Success: ${response.body()?.message}")
-                                                            } else {
-                                                                println("Error: ${response.errorBody()?.string()}")
-                                                            }
+
+                                                                override fun onFailure(
+                                                                    call: retrofit2.Call<ApiResponse>,
+                                                                    t: Throwable
+                                                                ) {
+                                                                    println("Failure: ${t.message}")
+                                                                }
+                                                            })
+                                                        try{val response = api.getTotal(4)
+                                                        prixtotal.value = response.total
+                                                        Log.e("RestaurantMenuScreen", ": ${response}")
+                                                    } catch (e: Exception) {
+                                                        // Gérer les erreurs
+                                                        println("Failed to update total: ${e.message}")
+                                                    }
                                                         }
 
-                                                        override fun onFailure(call: retrofit2.Call<ApiResponse>, t: Throwable) {
-                                                            println("Failure: ${t.message}")
-                                                        }
-                                                    })
+                                                    quantity--
 
-                                                }},
+
+                                                 }
+                                                },
                                                 content = "-",
                                                 contentColor = gray,
                                                 buttonColor = gray2,
@@ -324,7 +360,7 @@ fun DisplayCardItems(navController: NavHostController,
 
                                         //DialogScreen()
                                         var showDialog = remember { mutableStateOf(false) }
-                                        var additionalNote = remember { mutableStateOf("") }
+                                        var additionalNote = remember { mutableStateOf(item.item_special_notes?:"") }
 
                                         FloatingActionButton(
                                             onClick = { showDialog.value = true
@@ -336,13 +372,14 @@ fun DisplayCardItems(navController: NavHostController,
                                             Icon(Icons.Default.Edit, contentDescription = "Add")
                                         }
                                         EditableTextDialog(
+                                            initialText = additionalNote.value,
                                             showDialog = showDialog.value,
                                             onDismiss = { showDialog.value = false },
                                             onConfirm = { text ->
-                                                additionalNote.value = text
+                                                additionalNote.value =  text
                                                 showDialog.value = false
-                                                Log.d("hellllooo${it.item_id} ", "Error: ${menuList}")
-                                                val updateNotesRequest = UpdateNotesRequest(orderItemId = it.order_item_id, specialNotes = additionalNote.value)
+                                                Log.d("hellllooo${item.item_id} ", "Error: ${menuList}")
+                                                val updateNotesRequest = UpdateNotesRequest(orderItemId = item.order_item_id, specialNotes = additionalNote.value)
                                                 api.updateOrderNotes(updateNotesRequest).enqueue(object : retrofit2.Callback<ApiResponse> {
                                                     override fun onResponse(call: retrofit2.Call<ApiResponse>, response: retrofit2.Response<ApiResponse>) {
                                                         if (response.isSuccessful) {
@@ -360,22 +397,26 @@ fun DisplayCardItems(navController: NavHostController,
                                         )
                                         FloatingActionButton(
                                             onClick = {
-                                                val request = RemoveItemRequest(it.item_id)
 
-                                                    coroutineScope.launch {
-                                                        try {
-                                                            val response =
-                                                                api.removeItemFromCart(it.order_item_id)
-                                                            if (response.isSuccessful) {
-                                                                val apiResponse = response.body()
-                                                                //  Toast.makeText(this@LazyColumn, apiResponse?.message ?: "Item removed successfully", Toast.LENGTH_SHORT).show()
-                                                            } else {
-                                                                // Toast.makeText(this@MainActivity, "Failed to remove item: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
-                                                            }
-                                                        } catch (e: Exception) {
-                                                            //  Toast.makeText(this@MainActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                        }
+                                                coroutineScope.launch {
+                                                    try {
+                                                        val apiResponse = api.removeItemFromCart(item.order_item_id)
+                                                        // Handle the successful response
+                                                        println(apiResponse.message)
+                                                    } catch (e: Exception) {
+                                                        // Handle errors
+                                                        println("Error: ${e.message}")
                                                     }
+                                                    try{val response = api.getTotal(4)
+                                                        prixtotal.value = response.total
+                                                        Log.e("RestaurantMenuScreen", ": ${response}")
+                                                    } catch (e: Exception) {
+                                                        // Gérer les erreurs
+                                                        println("Failed to update total: ${e.message}")
+                                                    }
+                                                }
+
+                                                menuList = menuList.filter { it.item_id != item.item_id }
 
                                             },
                                             containerColor = gray2,
@@ -395,10 +436,9 @@ fun DisplayCardItems(navController: NavHostController,
 
                         }
 
-                    )
+
 
                 }
-                Spacer(modifier = Modifier.height(250.dp))
             }
             Card(
                 colors = CardDefaults.cardColors(
@@ -449,7 +489,7 @@ fun DisplayCardItems(navController: NavHostController,
 
 
                             Text(
-                                text = "500$",
+                                text = "50.0$",
                                 style = TextStyle(
                                     fontStyle = FontStyle.Italic,
                                     fontWeight = FontWeight.Bold,
@@ -470,32 +510,15 @@ fun DisplayCardItems(navController: NavHostController,
                                 fontSize = 18.sp,
                                 color = orange
                             ))
-
-
-
-
-//                        fun getCartTotal(orderId: Int) {
-//                            api.getCartTotal(orderId).enqueue(object : Callback<CartTotalResponse> {
-//                                override fun onResponse(
-//                                    call: Call<CartTotalResponse>,
-//                                    response: Response<CartTotalResponse>
-//                                ) {
-//                                    if (response.isSuccessful) {
-//                                         prixtotale = response.body()!!.total
-//                                     //   println("Success: Total cart price is $total")
-//                                    } else {
-//                                        println("Failed: ${response.code()} - ${response.errorBody()?.string()}")
-//                                    }
-//                                }
-//
-//                                override fun onFailure(call: Call<CartTotalResponse>, t: Throwable) {
-//                                    println("Error: ${t.message}")
-//                                }
-//                            })
-//                        }
-
+                        coroutineScope.launch { try{val response = api.getTotal(4)
+                            prixtotal.value = response.total
+                            Log.e("RestaurantMenuScreen", ": ${response}")
+                        } catch (e: Exception) {
+                            // Gérer les erreurs
+                            println("Failed to update total: ${e.message}")
+                        } }
                         Text(
-                            text = "${prixtotal}$",
+                            text = "${prixtotal.value}$",
                             style = TextStyle(
                                 fontStyle = FontStyle.Italic,
                                 fontWeight = FontWeight.Bold,
@@ -511,33 +534,6 @@ fun DisplayCardItems(navController: NavHostController,
                         content = "Checkout",
                         imageVector = Icons.Filled.ShoppingCart,
                         onClick = {
-//                            CoroutineScope(Dispatchers.IO).launch {
-//                                try {
-//                                    val updateRequest = UpdateOrderItemRequest(
-//                                        orderItemId = 1, // Replace with the actual orderItemId
-//                                        quantity = currentQuantity,
-//                                        specialNotes = "Extra spicy" // Optional
-//                                    )
-//                                    val response =
-//                                        RetrofitInstance.api.updateOrderItem(updateRequest)
-//                                    withContext(Dispatchers.Main) {
-//                                        if (response.isSuccessful) {
-//                                            Log.d(
-//                                                "Update Success",
-//                                                "Quantity updated to $currentQuantity"
-//                                            )
-//                                        } else {
-//                                            Log.e("Update Error", "Error: ${response.code()}")
-//                                        }
-//                                    }
-//                                } catch (e: Exception) {
-//                                    Log.e("Update Error", "Exception: ${e.message}")
-//                                }
-//                            }
-//                            Log.e("truuuuuuuuuuuuuuuuuuuuuuuu", "Error: ${orderId.value}")
-//                            navController.navigate(
-//                                Destination.PayementandAddress.route
-//                            )
                       })
 
                }
@@ -547,5 +543,6 @@ fun DisplayCardItems(navController: NavHostController,
     }
 
 }
+
 
 

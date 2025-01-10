@@ -12,10 +12,12 @@ import com.example.talabi.data.OrderItem
 import com.example.talabi.data.Orders
 import com.example.talabi.data.RemoveItemRequest
 import com.example.talabi.data.RemoveItemResponse
+import com.example.talabi.data.TotalResponse
 import com.example.talabi.data.UpdateNotesRequest
 import com.example.talabi.data.UpdateOrderItemResponse
 import com.example.talabi.data.UpdateQuantityRequest
 import com.example.talabi.model.Post
+import com.google.protobuf.Api
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -104,10 +106,16 @@ interface SimpleApi {
     fun updateOrderNotes(
         @Body request: UpdateNotesRequest
     ): Call<ApiResponse>
-    @DELETE("cart/remove/{orderItemId}")
-    suspend fun removeItemFromCart(@Path("orderItemId") orderItemId: Int): Response<ApiResponse>
+//    @DELETE("cart/remove/{orderItemId}")
+//    suspend fun removeItemFromCart(@Path("orderItemId") orderItemId: Int): Response<ApiResponse>
+//     @DELETE("cart/remove")
+//     fun removeItemFromCart(@Body request: RemoveItemRequest): Call<ApiResponse>
+
+
+    @DELETE("/api/cart/remove/{orderItemId}")
+    suspend fun removeItemFromCart(@Path("orderItemId") orderItemId: Int): ApiResponse
 
     @GET("/api/cart/total/{orderId}")
-    fun getCartTotal(@Path("orderId") orderId: Int): Call<CartTotalResponse>
+    suspend fun getTotal(@Path("orderId") orderId: Int): TotalResponse
 
 }

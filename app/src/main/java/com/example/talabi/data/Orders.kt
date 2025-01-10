@@ -44,3 +44,6 @@ data class CartTotalResponse(
     val createdAt: String? = null,
     val updatedAt: String? = null
 )
+data class TotalResponse(
+    val total: Double
+)
