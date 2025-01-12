@@ -149,7 +149,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Star,
-                            contentDescription = "Star icon",
+                            contentDescription = "Star",
                             tint = AppTheme.colors.secondarySurface, // Change the icon color
                             modifier = Modifier.size(24.dp) // Change the icon size
                         )
