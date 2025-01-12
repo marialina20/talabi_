@@ -99,9 +99,9 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
             val restaurantId = backStackEntry.arguments?.getString("restaurantId") ?: ""
             DisplayRestaurantMenu(navController, restaurantId = restaurantId, sharedViewModel)
         }
-        composable(Destination.FoodDescription.route) {
-            DisplayItemDiscreption(menuItemid = 7, navController =navController ,sharedViewModel=sharedViewModel)
-        }
+//        composable(Destination.FoodDescription.route) {
+//            DisplayItemDiscreption(menuItemid = 7, navController =navController ,sharedViewModel=sharedViewModel)
+//        }
         composable(Destination.Card.route) { DisplayCardItems(navController, sharedViewModel) }
         composable(Destination.Notification.route) { NotifListt() }
         composable(Destination.PayementandAddress.route) { DisplayPayementInfo(userid = 1, orderid = 1,navController) }

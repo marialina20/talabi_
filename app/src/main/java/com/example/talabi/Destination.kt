@@ -5,11 +5,11 @@ sealed class Destination(val route:String) {
     object RestaurantMenu:Destination("RestaurantMenu"){
         const val routed = "restaurant_menu/{restaurantId}"
     }
-    object FoodDescription:Destination("FoodDescription") {
-        /*fun getDestination(id:Int):String {
-            return this.route.replace("{idUser}",id.toString())
-        }*/
-    }
+//    object FoodDescription:Destination("FoodDescription") {
+//        /*fun getDestination(id:Int):String {
+//            return this.route.replace("{idUser}",id.toString())
+//        }*/
+//    }
     object Card:Destination("Card")
     object Restaumenu:Destination("restaumenu")
     object Notification:Destination("Notification")
@@ -26,9 +26,9 @@ sealed class Destination(val route:String) {
     object language:Destination("language")
     object settings:Destination("settings")
     object profile:Destination("profile")
-    object fooddescription:Destination("fooddescription/{itemid}"){
-        fun getDestination(id:Int):String {
-            return this.route.replace("{itemid}",id.toString())
+    object fooddescription : Destination("fooddescription/{itemid}") {
+        fun getDestination(id: Int): String {
+            return this.route.replace("{itemid}", id.toString())
         }
     }
 
