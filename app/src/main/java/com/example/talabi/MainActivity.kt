@@ -37,8 +37,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.ahlem.CategoriesScreen
 import com.example.ahlem.HomeScreen
-import com.example.ahlem.MoreRestaurantsScreen
-import com.example.ahlem.RestaurantDetailsScreen
 import com.example.ahlem.SearchScreen
 import com.example.myapplication.ui.theme.DisplayLieuPage
 import com.example.talabi.data.SettingsScreen
@@ -116,8 +114,8 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
             CategoriesScreen(id = restaurantId,navController)
         }
 
-        composable(Destination.restaurant_details.route) { RestaurantDetailsScreen() }
-        composable(Destination.more.route) { MoreRestaurantsScreen() }
+       // composable(Destination.restaurant_details.route) { RestaurantDetailsScreen() }
+       // composable(Destination.more.route) { MoreRestaurantsScreen() }
         composable(Destination.login.route) {
             LoginScreen(
                 modifier = Modifier.fillMaxSize(),

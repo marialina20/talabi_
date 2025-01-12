@@ -11,7 +11,29 @@ data class LoginResponse(
     val userId: Int,
     val message: String
 )
+data class RatingRequest(
+    val userId: Int,
+    val rating: Int,
+    val comment: String
+)
 
+// Response from backend
+data class RatingResponse(
+    val message: String,
+    val average_rating: Float // The backend sends new average after updating
+)
+
+data class RatingFoodRequest(
+    val userId: Int,
+    val rating: Int,
+    val comment: String
+)
+
+// Response from backend
+data class RatingFoodResponse(
+    val message: String,
+    val average_rating: Float // The backend sends new average after updating
+)
 
 data class Loginclass(
 
