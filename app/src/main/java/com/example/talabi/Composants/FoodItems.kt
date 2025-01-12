@@ -46,7 +46,6 @@ import com.example.talabi.Menu
 import com.example.talabi.Restaurant
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.MenuItems
-import com.example.talabi.data.menuItems
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.gray
 import com.example.talabi.ui.theme.gray2

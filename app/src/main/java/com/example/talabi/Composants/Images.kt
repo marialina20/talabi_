@@ -272,46 +272,46 @@ fun DisplayRestaurantImage2(
 
     }
 }
-@Composable
-fun DescriptionItemImage(menuItemid: Int,imagesize:Int= 100){
-    val menuItem= getMenuItemById(id = menuItemid)
-    Box (
-        modifier = Modifier.background(orange)
-    ){
-        Card(
-            modifier = Modifier
-                .background(Color.White)
-                .shadow(2.dp, shape = RoundedCornerShape(corner = CornerSize(16.dp)),),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardColors(
-                containerColor = white,
-                contentColor = Color.Transparent,
-                disabledContentColor = Color.Unspecified,
-                disabledContainerColor = Color.Unspecified
-            )
-
-        ) {
-            Image(painter = painterResource(id = menuItem!!.image), contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    //.padding(5.dp)
-                    .size(height = 200.dp, width = 1000.dp)
-                    .clip(RoundedCornerShape(corner = CornerSize(16.dp))))
-
-        }
-        Row (
-            modifier = Modifier.offset(x=265.dp,y=5.dp),
-            //horizontalArrangement = Arrangement.End
-
-        ){
-            FavoriteCirculedOutlineButton(imageVector = Icons.Filled.Favorite, sizeButton = 50, sizeIcon = 30, containerColor = Color(0xfFf1ebe9), borderStroke = 0.001f, borderColor = white,
-            )
-
-        }
-
-    }
-}
+//@Composable
+//fun DescriptionItemImage(menuItemid: Int,imagesize:Int= 100){
+//   // val menuItem= getMenuItemById(id = menuItemid)
+//    Box (
+//        modifier = Modifier.background(orange)
+//    ){
+//        Card(
+//            modifier = Modifier
+//                .background(Color.White)
+//                .shadow(2.dp, shape = RoundedCornerShape(corner = CornerSize(16.dp)),),
+//            shape = RoundedCornerShape(16.dp),
+//            colors = CardColors(
+//                containerColor = white,
+//                contentColor = Color.Transparent,
+//                disabledContentColor = Color.Unspecified,
+//                disabledContainerColor = Color.Unspecified
+//            )
+//
+//        ) {
+//            AsyncImage(model = menuItemid!!.image, contentDescription = null,
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    //.padding(5.dp)
+//                    .size(height = 200.dp, width = 1000.dp)
+//                    .clip(RoundedCornerShape(corner = CornerSize(16.dp))))
+//
+//        }
+//        Row (
+//            modifier = Modifier.offset(x=265.dp,y=5.dp),
+//            //horizontalArrangement = Arrangement.End
+//
+//        ){
+//            FavoriteCirculedOutlineButton(imageVector = Icons.Filled.Favorite, sizeButton = 50, sizeIcon = 30, containerColor = Color(0xfFf1ebe9), borderStroke = 0.001f, borderColor = white,
+//            )
+//
+//        }
+//
+//    }
+//}
 @Composable
 fun RestaurantMenuItemImage(image: String,imagesize:Int= 130){
     // val menuItem= getMenuItemById(id = menuItemid)

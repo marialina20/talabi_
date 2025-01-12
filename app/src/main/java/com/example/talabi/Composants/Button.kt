@@ -84,7 +84,7 @@ fun CircularAddButton(
             containerColor = buttonColor,
             contentColor = contentColor,
         ),
-        modifier = Modifier.size(size.dp)
+        modifier = Modifier.size(size.dp).clickable {  }
     ) {
         Text(
             text = content,

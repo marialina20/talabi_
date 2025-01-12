@@ -5,7 +5,6 @@ import com.example.talabi.data.MenuItem
 import com.example.talabi.data.Orders
 import com.example.talabi.data.Restaurant
 import com.example.talabi.data.User
-import com.example.talabi.data.menuItems
 //import com.example.talabi.data.orders
 import com.example.talabi.data.restaurants
 import com.example.talabi.data.users
@@ -14,11 +13,11 @@ import com.example.talabi.data.users
 fun getRestaurantById(id: Int): Restaurant? {
     return restaurants.find { it.id == id }
 }
-
-@Composable
-fun getMenuItemById(id: Int): MenuItem? {
-    return menuItems.find { it.id == id }
-}
+//
+//@Composable
+//fun getMenuItemById(id: Int): MenuItem? {
+//    return menuItems.find { it.id == id }
+//}
 @Composable
 fun getUserById(id: Int): User? {
     return users.find { it.id == id }

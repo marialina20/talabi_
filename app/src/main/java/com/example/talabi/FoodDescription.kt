@@ -1,5 +1,7 @@
 package com.example.talabi
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,21 +12,35 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -32,26 +48,104 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.talabi.Composants.CircularAddButton
-import com.example.talabi.Composants.DescriptionItemImage
 import com.example.talabi.Composants.ExtendedButton
+import com.example.talabi.Composants.FavoriteCirculedOutlineButton
 import com.example.talabi.Composants.RatingDialog
 import com.example.talabi.Composants.TopBar
-import com.example.talabi.Composants.getMenuItemById
+import com.example.talabi.api.RetrofitInstance
+import com.example.talabi.api.RetrofitInstance.api
+import com.example.talabi.data.MenuItem
+import com.example.talabi.data.MenuItems
+import com.example.talabi.data.OrderItem
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.gray
 import com.example.talabi.ui.theme.gray2
 import com.example.talabi.ui.theme.orange
 import com.example.talabi.ui.theme.white
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Composable
-fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController) {
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp
-    val screenWidth = configuration.screenWidthDp
-    val menuItem = getMenuItemById(id = menuItemid)
+fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController,sharedViewModel: SharedViewModel) {
+//    var menuItem by remember { mutableStateOf(
+//        MenuItem(
+//            id = menuItemid,
+//            image = "",
+//            description = "hhhhh",
+//            restaurantId = 0,
+//            name = "",
+//            availability_status = true,
+//            average_rating = 4.5f,
+//            price = 0.0
+//        )
+//    ) }
+//    val coroutineScope = rememberCoroutineScope()
+//
+//    var isLoading = remember { mutableStateOf(true) }
+//    var errorMessage = remember { mutableStateOf<String?>(null) }
+//
+//    LaunchedEffect(menuItemid) {
+//        coroutineScope.launch {
+//            try {
+//                //isLoading.value = true
+//                errorMessage.value = null
+//                val response = RetrofitInstance.api.getMenuItem(menuItemid)
+//                menuItem = response
+//                println("444444444444444444444")
+//                println(menuItem)
+//                // menuItem=menuItems
+//            } catch (e: Exception) {
+//                errorMessage.value = "Erreur lors du chargement des données : ${e.message}"
+//            } finally {
+//                isLoading.value = false
+//            }
+//        }
+//    }
+//    println("99999999999999999999999999")
+//    println(menuItem)
+    var menuItem by remember { mutableStateOf(
+        MenuItem(
+            id = menuItemid,
+            image = "",
+            description = "hhhhh",
+            restaurantId = 0,
+            name = "",
+            availability_status = 1,
+            average_rating = 4.5f,
+            price = 0.0
+        )
+    ) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val isLoading = remember { mutableStateOf(true) }
+    val errorMessage = remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(menuItemid) {
+        coroutineScope.launch {
+            try {
+                isLoading.value = true
+                errorMessage.value = null
+                val response = RetrofitInstance.api.getMenuItem(menuItemid)
+                menuItem = response // Update menuItem state
+                println("Updated menuItem:")
+                println(menuItem) // This will print the updated state
+            } catch (e: Exception) {
+                errorMessage.value = "Erreur lors du chargement des données : ${e.message}"
+            } finally {
+                isLoading.value = false
+            }
+        }
+    }
+
+    println("Current menuItem state:")
+    println(menuItem)
+
     Box (
         modifier = Modifier.fillMaxSize() ,
     ) {
@@ -64,20 +158,55 @@ fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             TopBar(
-                content = "Discreption",
+                content = "Description",
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                onClick = {navController.navigate(Destination.RestaurantMenu.route) }
+                onClick = { }
             )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
             ) {
-                DescriptionItemImage(menuItemid = menuItemid)
+                Box (
+                    modifier = Modifier.background(orange)
+                ){
+                    Card(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .shadow(2.dp, shape = RoundedCornerShape(corner = CornerSize(16.dp)),),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardColors(
+                            containerColor = white,
+                            contentColor = Color.Transparent,
+                            disabledContentColor = Color.Unspecified,
+                            disabledContainerColor = Color.Unspecified
+                        )
+
+                    ) {
+                        AsyncImage(model = menuItem!!.image, contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                //.padding(5.dp)
+                                .size(height = 200.dp, width = 1000.dp)
+                                .clip(RoundedCornerShape(corner = CornerSize(16.dp))))
+
+                    }
+                    Row (
+                        modifier = Modifier.offset(x=265.dp,y=5.dp),
+                        //horizontalArrangement = Arrangement.End
+
+                    ){
+                        FavoriteCirculedOutlineButton(imageVector = Icons.Filled.Favorite, sizeButton = 50, sizeIcon = 30, containerColor = Color(0xfFf1ebe9), borderStroke = 0.001f, borderColor = white,
+                        )
+
+                    }
+
+                }
             }
             Text(
                 modifier = Modifier.padding(start = 15.dp),
-                text = menuItem!!.name,
+                text = menuItem.name,
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
             )
             Column (
@@ -98,7 +227,7 @@ fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController) {
 
                     RatingDialog()
                     Text(
-                        text = " ${menuItem.averageRating}",
+                        text = " ${menuItem.average_rating}",
                         style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 16.sp)
                     )
                 }
@@ -129,35 +258,33 @@ fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController) {
                     .fillMaxWidth()
             ) {
 
+                ExtendedButton(content = "Add to my Card", imageVector = Icons.Filled.ShoppingCart,onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
 
-                var numberofItem = 0
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(3.dp),
-                ) {
-                    CircularAddButton(
-                        onClick = { numberofItem++ },
-                        content = "+",
-                        contentColor = gray,
-                        buttonColor = gray2,
-                        size = 40,
-                        contentsize = 25
-                    )
-                    Spacer(modifier = Modifier.size(4.dp))
-                    Text(text = "$numberofItem")
-                    Spacer(modifier = Modifier.size(4.dp))
-                    CircularAddButton(
-                        onClick = { numberofItem-- },
-                        content = "-",
-                        contentColor = gray,
-                        buttonColor = gray2,
-                        size = 40,
-                        contentsize = 30
-                    )
-                }
-                ExtendedButton(content = "Add to my Card", imageVector = Icons.Filled.ShoppingCart,onClick = {})
+                            val newUser = OrderItem(
+                                userId = 2,           // Remplacez `orderId` par `userId`
+                                menuItemId = menuItem.id,
+                                quantity = 1,         // Assurez-vous qu'une valeur > 0 est utilisée
+                                specialNotes = ""
+                            )
+                            val response = RetrofitInstance.api.addToOrder(newUser)
+                            withContext(Dispatchers.Main) {
+                                if (response.isSuccessful) {
+                                    sharedViewModel.setOrderId(response.body()!!.orderId)
+                                    Log.e("truuuuuuuuuuuuuuuuuuuuuuuu", "Error: ${response.body()!!.orderId}")
+
+                                } else {
+                                    Log.e("faaaaaaaaaaaaaaaaaaaalse", "Error: ${response.code()}")
+
+                                }
+                            }
+                        } catch (e: Exception) {
+
+                        }
+                    }
+
+                })
             }
 
         }

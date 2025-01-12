@@ -30,9 +30,8 @@ import com.example.talabi.R
 import com.example.talabi.data.ChatData
 import com.example.talabi.data.ChatData.chats
 import com.example.talabi.data.ChatList
-import com.example.talabi.data.NotifData
-import com.example.talabi.data.Notification
-import com.example.talabi.data.menuItems
+//import com.example.talabi.data.NotifData
+//import com.example.talabi.data.Notification
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
