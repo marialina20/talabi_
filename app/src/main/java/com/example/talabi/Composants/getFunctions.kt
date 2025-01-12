@@ -4,6 +4,10 @@ import androidx.compose.runtime.Composable
 import com.example.talabi.data.MenuItem
 import com.example.talabi.data.Restaurant
 import com.example.talabi.data.User
+<<<<<<< Updated upstream
+=======
+import com.example.talabi.data.menuItems
+>>>>>>> Stashed changes
 import com.example.talabi.data.restaurants
 import com.example.talabi.data.users
 

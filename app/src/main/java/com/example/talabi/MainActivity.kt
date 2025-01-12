@@ -16,6 +16,7 @@ package com.example.talabi
 
 
 import DisplayCardItems
+import RegistrationScreen
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
