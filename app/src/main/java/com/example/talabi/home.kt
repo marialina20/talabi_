@@ -45,6 +45,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.talabi.Composants.CallButton
 import com.example.talabi.Composants.DisplayRestaurantImage
 import com.example.talabi.Composants.DisplayRestaurantImage2
 import com.example.talabi.Composants.RestaurantMenuItemImage
@@ -105,6 +106,8 @@ fun HomeScreen(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
+                CallButton(phoneNumber = "1234567890")
+
                 Text(
                     text = buildAnnotatedString {
                         withStyle(style = SpanStyle(color = Color(0xFFFE8C00))) {

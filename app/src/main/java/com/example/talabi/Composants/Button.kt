@@ -1,6 +1,10 @@
 package com.example.talabi.Composants
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -55,6 +59,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat
 import com.example.talabi.RatingFoodRequest
 import com.example.talabi.RatingRequest
 import com.example.talabi.api.RetrofitInstance
@@ -682,6 +687,24 @@ fun RestaurantRatingDialog(
     }
 }
 
+
+@Composable
+fun CallButton(phoneNumber: String) {
+    val context = LocalContext.current // Access the Context
+
+    Button(
+        onClick = {
+            // Create an intent to open the phone dialer
+            val intent = Intent(Intent.ACTION_DIAL).apply {
+                data = Uri.parse("tel:$phoneNumber") // Append the phone number
+            }
+            context.startActivity(intent) // Start the dialer activity
+        },
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Text("Call $phoneNumber")
+    }
+}
 
 
 
