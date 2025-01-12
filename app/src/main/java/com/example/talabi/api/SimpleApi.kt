@@ -9,6 +9,7 @@ import com.example.talabi.data.ApiResponse
 import com.example.talabi.data.CartTotalResponse
 import com.example.talabi.data.MenuItem
 import com.example.talabi.data.MenuItems
+import com.example.talabi.data.NotificationDto
 import com.example.talabi.data.OrderItem
 import com.example.talabi.data.Orders
 import com.example.talabi.data.RemoveItemRequest
@@ -120,4 +121,6 @@ interface SimpleApi {
     suspend fun getTotal(@Path("orderId") orderId: Int): TotalResponse
     @GET("/api/descriptionfood/{id}")
     suspend fun getMenuItem(@Path("id") menuItemId: Int): MenuItem
+    @GET("/api/users/{userId}/notifications")
+    suspend fun getNotifications(@Path("userId") userId: Int): Response<List<NotificationDto>>
 }
