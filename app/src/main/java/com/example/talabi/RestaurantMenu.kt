@@ -47,7 +47,9 @@ import androidx.navigation.NavHostController
 import androidx.privacysandbox.tools.core.model.Types.unit
 import com.example.talabi.Composants.CircularAddButton
 import com.example.talabi.Composants.DisplayRestaurantImage
+import com.example.talabi.Composants.DisplayRestaurantImage3
 import com.example.talabi.Composants.MenuItemImage
+import com.example.talabi.Composants.StarWithRatingDialog
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.OrderItem
 import com.example.talabi.ui.theme.AppTheme
@@ -70,7 +72,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
    // val menu= remember { menuItems}
     Column (modifier = Modifier
         .padding(vertical = 24.dp, horizontal = 8.dp)) {
-        DisplayRestaurantImage(restau_id = 1)
+        DisplayRestaurantImage3(restaurantId)
         Spacer(modifier = Modifier.height(12.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -143,12 +145,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(3.dp),
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = "Star icon",
-                            tint = AppTheme.colors.secondarySurface, // Change the icon color
-                            modifier = Modifier.size(24.dp) // Change the icon size
-                        )
+                        StarWithRatingDialog(menuItem.id,1)
                         Text(
                             text = " ${menuItem.average_rating}",
                             style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp)
