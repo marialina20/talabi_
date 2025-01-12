@@ -42,10 +42,6 @@ import com.example.talabi.R
 import androidx.compose.runtime.*
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import coil.compose.AsyncImage
-import com.example.talabi.Composants.DisplayRestaurantImage
-import com.example.talabi.Composants.DisplayRestaurantImage2
-import com.example.talabi.Composants.RestaurantMenuItemImage
 import com.example.talabi.Menu
 import com.example.talabi.Restaurant
 import com.example.talabi.api.RetrofitInstance
@@ -81,8 +77,8 @@ fun MainScreeen() {
                 CategoriesScreen(id = restaurantId, navController)
             }
 
-          //  composable("restaurant_details") { RestaurantDetailsScreen() }
-           // composable("more") { MoreRestaurantsScreen() }
+            composable("restaurant_details") { RestaurantDetailsScreen() }
+            composable("more") { MoreRestaurantsScreen() }
         }
     }
 }
@@ -375,20 +371,16 @@ fun NearRestaurantsList(navController: NavController) {
     }
 
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 1.dp, vertical = 12.dp),
         modifier = Modifier
-            .padding(WindowInsets.navigationBars.asPaddingValues())
-            .padding(bottom = 50.dp)
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         items(restaurantList) { restaurant ->
             Card(
                 shape = RoundedCornerShape(30.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 8.dp)
+                    .padding(vertical = 8.dp)
                     .clickable { navController.navigate("restaurantMenu/${restaurant.id}") },
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(3.dp) // Add shadow
@@ -401,15 +393,14 @@ fun NearRestaurantsList(navController: NavController) {
                 ) {
                     // Assuming the image is stored in a drawable or URL for each restaurant
                     val imageRes = R.drawable.drink // Replace with actual logic to load image
-                    RestaurantMenuItemImage(restaurant.logo)
-//                    AsyncImage(
-//                        model = restaurant.logo,
-//                        contentDescription = "Restaurant Image",
-//                        modifier = Modifier
-//                            .fillMaxHeight() // Ensures image takes full height
-//                            .width(120.dp) // Adjust width as needed
-//                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
-//                    )
+                    Image(
+                        painter = painterResource(id = imageRes),
+                        contentDescription = "Restaurant Image",
+                        modifier = Modifier
+                            .fillMaxHeight() // Ensures image takes full height
+                            .width(120.dp) // Adjust width as needed
+                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
+                    )
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(
                         verticalArrangement = Arrangement.spacedBy(4.dp), // Adds spacing between lines
@@ -597,16 +588,6 @@ fun SearchScreen() {
 fun CategoriesScreen(id : String, navController: NavController) {
     var restaurantList by remember { mutableStateOf<List<Restaurant>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
-    Column (modifier = Modifier
-        .padding(vertical = 24.dp, horizontal = 8.dp)) {
-        DisplayRestaurantImage2(category = id)
-        Spacer(modifier = Modifier.height(12.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-        }
 
     LaunchedEffect(Unit) {
         coroutineScope.launch {
@@ -652,15 +633,14 @@ fun CategoriesScreen(id : String, navController: NavController) {
                 ) {
                     // Assuming the image is stored in a drawable or URL for each restaurant
                     val imageRes = R.drawable.drink // Replace with actual logic to load image
-//                    AsyncImage(
-//                        model = restaurant.logo,
-//                        contentDescription = "Restaurant Image",
-//                        modifier = Modifier
-//                            .fillMaxHeight() // Ensures image takes full height
-//                            .width(120.dp) // Adjust width as needed
-//                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
-//                    )
-                    RestaurantMenuItemImage(restaurant.logo)
+                    Image(
+                        painter = painterResource(id = imageRes),
+                        contentDescription = "Restaurant Image",
+                        modifier = Modifier
+                            .fillMaxHeight() // Ensures image takes full height
+                            .width(120.dp) // Adjust width as needed
+                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
+                    )
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(
                         verticalArrangement = Arrangement.spacedBy(4.dp), // Adds spacing between lines
@@ -725,4 +705,4 @@ fun MoreRestaurantsScreen() {
     ) {
         Text("More Restaurants Screen", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
     }
-}}
+}

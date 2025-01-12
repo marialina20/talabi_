@@ -50,7 +50,6 @@ import com.example.talabi.Composants.DisplayRestaurantImage
 import com.example.talabi.Composants.MenuItemImage
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.OrderItem
-import com.example.talabi.data.menuItems
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.orange
 import kotlinx.coroutines.CoroutineScope
@@ -68,7 +67,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
     val specialNotes = "nnnnnnnn "
     val message = remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
-    val menu= remember { menuItems}
+   // val menu= remember { menuItems}
     Column (modifier = Modifier
         .padding(vertical = 24.dp, horizontal = 8.dp)) {
         DisplayRestaurantImage(restau_id = 1)
