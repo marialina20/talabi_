@@ -105,6 +105,13 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
         composable(Destination.Card.route) { DisplayCardItems(navController, sharedViewModel) }
         composable(Destination.Notification.route) { NotifListt() }
         composable(Destination.PayementandAddress.route) { DisplayPayementInfo(userid = 1, orderid = 1,navController) }
+//        composable(
+//            route = "${Destination.LieuPage.route}/{orderId}",
+//            arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+//        ) { backStackEntry ->
+//            val orderId = backStackEntry.arguments?.getInt("orderId") ?: 0
+//            DisplayLieuPage(navController, orderId)
+//        }
         composable(Destination.LieuPage.route) { DisplayLieuPage(navController) }
         composable(Destination.home.route) { HomeScreen(navController) }
         composable(Destination.search.route) { SearchScreen() }

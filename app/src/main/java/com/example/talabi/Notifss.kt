@@ -30,6 +30,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.NotificationDto
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.time.format.TextStyle
 
 @SuppressLint("SuspiciousIndentation")
@@ -118,6 +120,8 @@ fun NotifListt() {
     }
 }
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NotifItem(notif: NotificationDto) {
     Column(
@@ -129,40 +133,70 @@ fun NotifItem(notif: NotificationDto) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(8.dp)
         ) {
+            // Conditionally set the image resource based on the notification status
+            val imageResource = when (notif.status) {
+                "pending", "cancelled" -> R.drawable.modificon
+                "on_the_way", "delivered" -> R.drawable.img_21
+                "preparing" -> R.drawable.img_20
+                else -> R.drawable.profile // Default image if no condition matches
+            }
+
             Image(
-                painter = painterResource(R.drawable.profile),
+                painter = painterResource(imageResource),
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
                 contentScale = ContentScale.Crop
             )
+
             Spacer(modifier = Modifier.width(8.dp))
+
             Column {
                 Text(
-                    text = "Order #${notif.orderId}",
+                    text = "Your Order State",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = notif.status)
+
+                // Display the status with a font size of 18
+                Text(
+                    text = notif.status,
+                    fontSize = 18.sp // Adjusted font size
+                )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = notif.updatedAt)
+
+                // Format the updatedAt date before displaying
+                val formattedDate = formatDateTime(notif.updatedAt)
+                Text(text = formattedDate)
             }
         }
     }
 }
 
+
+// Helper function to format the full date-time string
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatDateTime(dateTime: String): String {
+    val formatter = DateTimeFormatter.ISO_DATE_TIME
+    val dateTimeObj = ZonedDateTime.parse(dateTime, formatter)
+
+    // Format to a more user-friendly string
+    val formattedDate = dateTimeObj.format(DateTimeFormatter.ofPattern("MMM dd, yyyy 'at' h:mm a"))
+    return formattedDate
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun groupNotificationsByDate(notifications: List<NotificationDto>): Map<String, List<NotificationDto>> {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val formatter = DateTimeFormatter.ISO_DATE_TIME // Use the built-in ISO_DATE_TIME formatter
     val today = LocalDate.now()
     val yesterday = today.minusDays(1)
 
     return notifications.groupBy { notif ->
-        val notificationDate = LocalDate.parse(notif.updatedAt, formatter)
+        val notificationDate = LocalDateTime.parse(notif.updatedAt, formatter) // Parse the full date-time string
         when {
-            notificationDate == today -> "Aujourd'hui"
-            notificationDate == yesterday -> "Hier"
-            notificationDate.isAfter(today.minusWeeks(1)) -> "Cette semaine"
+            notificationDate.toLocalDate() == today -> "Aujourd'hui"
+            notificationDate.toLocalDate() == yesterday -> "Hier"
+            notificationDate.toLocalDate().isAfter(today.minusWeeks(1)) -> "Cette semaine"
             else -> "Plus ancien"
         }
     }

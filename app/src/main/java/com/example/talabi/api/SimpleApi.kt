@@ -119,8 +119,29 @@ interface SimpleApi {
 
     @GET("/api/cart/total/{orderId}")
     suspend fun getTotal(@Path("orderId") orderId: Int): TotalResponse
+
     @GET("/api/descriptionfood/{id}")
     suspend fun getMenuItem(@Path("id") menuItemId: Int): MenuItem
+
     @GET("/api/users/{userId}/notifications")
     suspend fun getNotifications(@Path("userId") userId: Int): Response<List<NotificationDto>>
+
+
+    data class UpdateDeliveryRequest(
+        val delivery_address: String?,
+        val delivery_notes: String?
+    )
+    data class ApiResponse2(
+        val message: String
+    )
+
+
+        @PUT("/api/orders/{orderId}")
+        fun updateDeliveryDetails(
+            @Path("orderId") orderId: Int,
+            @Body updateRequest: UpdateDeliveryRequest
+        ): Call<ApiResponse2>
+
+
+
 }
