@@ -140,6 +140,8 @@ interface SimpleApi {
         fun updateDeliveryDetails(
             @Path("orderId") orderId: Int,
             @Body updateRequest: UpdateDeliveryRequest
+
+            
         ): Call<ApiResponse2>
 
 
