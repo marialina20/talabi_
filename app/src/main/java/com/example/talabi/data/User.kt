@@ -2,13 +2,21 @@ package com.example.talabi.data
 
 data class User(
     val id:Int,
-    val name: String,
-    val email: String,
-    val phone: String,
+    var name: String,
+    var email: String,
+    var phone: String,
     val address: String,
     val profilePicture: String? = null,
     val password: String,
     val googleAccountId: String? = null
+)
+data class LoginRequest(
+    var email: String,
+    var password: String
+)
+data class LoginResponse(
+    val message: String,
+    val user: User? // Assuming `User` is a class with id, name, and email fields.
 )
 
 val users = listOf(

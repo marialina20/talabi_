@@ -31,6 +31,11 @@ sealed class Destination(val route:String) {
             return this.route.replace("{itemid}", id.toString())
         }
     }
+    object editprofile : Destination("editprofile/{userid}") {
+        fun getDestination(id: Int): String {
+            return this.route.replace("{userid}", id.toString())
+        }
+    }
 
 
 }

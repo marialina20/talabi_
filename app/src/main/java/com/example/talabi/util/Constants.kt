@@ -4,7 +4,7 @@ class Constants {
     companion object{
 
       //  const val BASE_URL = "https://jsonplaceholder.typicode.com"
-        const val BASE_URL = "https://cb3d-105-96-230-193.ngrok-free.app"
+        const val BASE_URL = "https://6f2e-41-111-189-195.ngrok-free.app"
 
     }
 }

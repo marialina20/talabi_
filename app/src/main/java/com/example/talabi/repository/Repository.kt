@@ -1,13 +1,13 @@
 package com.example.talabi.repository
-import com.example.talabi.LoginResponse
 import com.example.talabi.Loginclass
 import com.example.talabi.Menu
 import com.example.talabi.Restaurant
 import com.example.talabi.api.RetrofitInstance
-
+import com.example.talabi.data.LoginResponse
 import com.example.talabi.model.Post
 import retrofit2.Response
 import retrofit2.Retrofit
+import com.example.talabi.data.UserProfileRequest
 
 class Repository {
 
@@ -41,4 +41,9 @@ class Repository {
     suspend fun pushPost2(userId: String, id: Int, title: String, body: String): Response<Post> {
         return RetrofitInstance.api.pushPost2(userId, id, title, body)
     }
+
+
+
+
+
 }

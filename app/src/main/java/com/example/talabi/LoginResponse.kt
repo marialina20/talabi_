@@ -6,11 +6,6 @@ package com.example.talabi
 //    val userName: String,
 //    val userEmail: String
 //)
-data class LoginResponse(
-    val token: String,
-    val userId: Int,
-    val message: String
-)
 
 
 data class Loginclass(

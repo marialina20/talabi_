@@ -1,23 +1,27 @@
 package com.example.talabi.api
 
-import com.example.talabi.LoginResponse
+
 import com.example.talabi.Loginclass
 import com.example.talabi.Menu
 import com.example.talabi.OrderResponse
 import com.example.talabi.Restaurant
 import com.example.talabi.data.ApiResponse
 import com.example.talabi.data.CartTotalResponse
+import com.example.talabi.data.LoginRequest
+import com.example.talabi.data.LoginResponse
 import com.example.talabi.data.MenuItem
 import com.example.talabi.data.MenuItems
 import com.example.talabi.data.NotificationDto
 import com.example.talabi.data.OrderItem
 import com.example.talabi.data.Orders
+
 import com.example.talabi.data.RemoveItemRequest
 import com.example.talabi.data.RemoveItemResponse
 import com.example.talabi.data.TotalResponse
 import com.example.talabi.data.UpdateNotesRequest
 import com.example.talabi.data.UpdateOrderItemResponse
 import com.example.talabi.data.UpdateQuantityRequest
+import com.example.talabi.data.User
 import com.example.talabi.model.Post
 import com.google.protobuf.Api
 import retrofit2.Call
@@ -31,6 +35,11 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
+import com.example.talabi.data.UserProfileRequest
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.Multipart
+import retrofit2.http.Part
 
 interface SimpleApi {
     @GET("/api/users/1")
@@ -55,6 +64,9 @@ interface SimpleApi {
     suspend fun getPost2(
         @Path("postNumber") number: Int
     ): Response<Post>
+
+
+
 
     @GET("/api/users")
     suspend fun getCustomPost(
@@ -123,4 +135,26 @@ interface SimpleApi {
     suspend fun getMenuItem(@Path("id") menuItemId: Int): MenuItem
     @GET("/api/users/{userId}/notifications")
     suspend fun getNotifications(@Path("userId") userId: Int): Response<List<NotificationDto>>
+
+
+
+// Update user profile
+@Multipart
+@PUT("/api/users/{id}")
+suspend fun updateUserProfile(
+    @Path("id") id: Int,
+    @Part("name") name: RequestBody,
+    @Part("email") email: RequestBody,
+
+): Response<User>
+
+    @GET("/api/users/{id}")
+    suspend fun getUser(
+        @Path("id") number: Int
+    ): Response<User>
+
+    @POST("/api/login")
+    suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
+
+
 }
