@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,11 +47,12 @@ import androidx.navigation.NavHostController
 import androidx.privacysandbox.tools.core.model.Types.unit
 import com.example.talabi.Composants.CircularAddButton
 import com.example.talabi.Composants.DisplayRestaurantImage
+import com.example.talabi.Composants.DisplayRestaurantImage3
 import com.example.talabi.Composants.MenuItemImage
+import com.example.talabi.Composants.StarWithRatingDialog
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.OrderItem
 import com.example.talabi.ui.theme.AppTheme
-import com.example.talabi.ui.theme.blue
 import com.example.talabi.ui.theme.orange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -72,7 +72,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
    // val menu= remember { menuItems}
     Column (modifier = Modifier
         .padding(vertical = 24.dp, horizontal = 8.dp)) {
-        DisplayRestaurantImage(restau_id = 1)
+        DisplayRestaurantImage3(restaurantId)
         Spacer(modifier = Modifier.height(12.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -110,8 +110,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
         modifier = Modifier
             .shadow(shape = RoundedCornerShape(16.dp), elevation = 10.02.dp)
             .padding(bottom = 5.dp)
-            .fillMaxWidth()
-            .clickable { navController.navigate(Destination.fooddescription.getDestination(menuItem.id)) },
+            .fillMaxWidth(),
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
 
         ) {
@@ -134,8 +133,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                     style = TextStyle(
                         fontStyle = FontStyle.Italic,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = blue
+                        fontWeight = FontWeight.Bold
                     )
 
                 )
@@ -147,15 +145,10 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(3.dp),
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = "Star",
-                            tint = AppTheme.colors.secondarySurface, // Change the icon color
-                            modifier = Modifier.size(24.dp) // Change the icon size
-                        )
+                        StarWithRatingDialog(menuItem.id,1)
                         Text(
                             text = " ${menuItem.average_rating}",
-                            style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp,color = blue)
+                            style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp)
                         )
                         //Text(text = " ${menuItem.price}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
                     }

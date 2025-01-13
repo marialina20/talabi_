@@ -4,6 +4,10 @@ package com.example.talabi.api
 import com.example.talabi.Loginclass
 import com.example.talabi.Menu
 import com.example.talabi.OrderResponse
+import com.example.talabi.RatingFoodRequest
+import com.example.talabi.RatingFoodResponse
+import com.example.talabi.RatingRequest
+import com.example.talabi.RatingResponse
 import com.example.talabi.Restaurant
 import com.example.talabi.data.ApiResponse
 import com.example.talabi.data.CartTotalResponse
@@ -61,7 +65,27 @@ interface SimpleApi {
     @GET("/api/restaurants/cuisine/{id}")
     suspend fun getRestaurantByType(@Path("id") cuisineType: String): Response<List<Restaurant>>
 
+    @GET("/api/restaurants/{id}")
+    suspend fun getRestaurantById(@Path("id") id: String): Response<Restaurant>
 
+
+//    @POST("restaurants/{id}/rating")
+//    suspend fun submitRating(
+//        @Path("id") restaurantId: Int,
+//        @Body request: RatingRequest
+//    ): RatingResponse
+
+    @POST("/api/restaurants/{id}/rating")
+    suspend fun submitRating(
+        @Path("id") restaurantId: Int,
+        @Body request: RatingRequest
+    ): RatingResponse
+
+    @POST("/api/menu-items/{id}/rating")
+    suspend fun submitFoodRating(
+        @Path("id") foodId: Int,
+        @Body request: RatingFoodRequest
+    ): RatingFoodResponse
 
     @GET("/api/users/{postNumber}")
     suspend fun getPost2(

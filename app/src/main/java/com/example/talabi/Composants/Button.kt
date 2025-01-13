@@ -1,21 +1,27 @@
 package com.example.talabi.Composants
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
@@ -29,6 +35,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -39,18 +47,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import com.example.talabi.RatingFoodRequest
+import com.example.talabi.RatingRequest
+import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.blue
 import com.example.talabi.ui.theme.gray
 import com.example.talabi.ui.theme.gray2
 import com.example.talabi.ui.theme.orange
 import com.example.talabi.ui.theme.white
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun CircularAddButton(
@@ -394,8 +410,11 @@ fun RatingDialog(
 fun RatingDialog() {
     var showDialog = remember { mutableStateOf(false) }
     var userRating = remember { mutableStateOf(0) }
+    var userComment = remember{ mutableStateOf("") }
+    val context = LocalContext.current
 
-        IconButton(onClick = { showDialog.value = true },
+
+    IconButton(onClick = { showDialog.value = true },
             modifier = Modifier.padding(0.dp),
             content = { Icon(
                 imageVector = Icons.Filled.Star,
@@ -403,6 +422,7 @@ fun RatingDialog() {
                 tint = AppTheme.colors.secondarySurface,
                 modifier = Modifier.size(24.dp))}
             )
+
 //        if (userRating.value > 0) {
 //            Text(text = "Your Rating: ${userRating.value} Stars", modifier = Modifier.padding(top = 16.dp))
 //        }
@@ -417,51 +437,252 @@ fun RatingDialog() {
 
 }
 @Composable
-fun CircledRatingDialog(
-    onClick: () -> Unit,
+fun StarWithRatingDialog(
+    foodId: Int, // Pass the restaurant ID
+    userId: Int // Pass the user ID
+) {
+    var showDialog = remember { mutableStateOf(false) }
+    var userRating = remember { mutableStateOf(0) }
+    var userComment = remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    // Star Icon (Button) to trigger the dialog
+    Icon(
+        imageVector = Icons.Filled.Star,
+        contentDescription = "Rate this food",
+        tint = AppTheme.colors.secondarySurface,
+        modifier = Modifier
+            .size(24.dp)
+            .clickable {
+                showDialog.value = true // Show the rating dialog on click
+            }
+    )
+
+    // Display the Rating Dialog if `showDialog` is true
+    if (showDialog.value) {
+        Dialog(onDismissRequest = { showDialog.value = false }) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(8.dp),
+                color = Color.White, // Set dialog background to white
+                tonalElevation = 8.dp // Optional shadow elevation
+            ) {
+                // Dialog Content
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+
+                    // Title
+                    Text("Rate this food:", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+
+                    // Rating Stars
+                    Row(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        for (i in 1..5) {
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                contentDescription = null,
+                                tint = if (i <= userRating.value) orange else Color.Gray,
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clickable { userRating.value = i }
+                            )
+                        }
+                    }
+
+                    // OutlinedTextField for the comment
+                    OutlinedTextField(
+                        value = userComment.value, // Access the current comment state
+                        onValueChange = { userComment.value = it }, // Update state on text change
+                        placeholder = { Text("Add a comment") }, // Placeholder text
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        textStyle = TextStyle(fontSize = 16.sp),
+                        label = { Text("Comment") } // Optional 'Comment' label
+                    )
+
+                    // Submit Button
+                    Button(
+                        colors = ButtonColors(
+                            containerColor = orange,
+                            contentColor = white,
+                            disabledContentColor = white,
+                            disabledContainerColor = white
+                        ),
+                        onClick = {
+                            // Make API Call on Submit
+                            CoroutineScope(Dispatchers.IO).launch {
+                                try {
+                                    val apiService = RetrofitInstance.api
+                                    val response = apiService.submitFoodRating(
+                                        foodId = foodId,
+                                        request = RatingFoodRequest(
+                                            userId = userId,
+                                            rating = userRating.value,
+                                            comment = userComment.value
+                                        )
+                                    )
+                                    Log.d(
+                                        "CircledRatingDialog",
+                                        "Success: ${response.average_rating}"
+                                    )
+                                } catch (e: Exception) {
+                                    Log.e("CircledRatingDialog", "Error: ${e.message}")
+                                }
+                            }
+                            showDialog.value = false // Dismiss dialog
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)
+                    ) {
+                        Text("Submit")
+                    }
+                }
+            }
+        }
+    }
+    }
+
+
+@Composable
+fun RestaurantRatingDialog(
+    restaurantId: Int,
+    userId: Int,
     sizeButton: Int,
     containerColor: Color,
-    contentColor: Color = white,
+    contentColor: Color = Color.White,
     borderStroke: Float,
     borderColor: Color
 ) {
     var showDialog = remember { mutableStateOf(false) }
     var userRating = remember { mutableStateOf(0) }
+    var userComment = remember { mutableStateOf("") }
+    val context = LocalContext.current
 
+    // Button to trigger the dialog
     OutlinedButton(
-        onClick = onClick,
+        onClick = { showDialog.value = true },
         modifier = Modifier.size(sizeButton.dp),
         shape = CircleShape,
         border = BorderStroke(borderStroke.dp, color = borderColor),
         contentPadding = PaddingValues(0.dp),
-        colors = ButtonColors(
+        colors = ButtonDefaults.outlinedButtonColors(
             containerColor = containerColor,
-            contentColor = contentColor,
-            disabledContentColor = gray,
-            disabledContainerColor = gray,
+            contentColor = contentColor
         )
     ) {
-        IconButton(onClick = { showDialog.value = true },
-            modifier = Modifier.padding(0.dp),
-            content = { Icon(
-                imageVector = Icons.Filled.Star,
-                contentDescription = "Star icon",
-                tint = AppTheme.colors.secondarySurface,
-                modifier = Modifier.size(24.dp))}
+        Icon(
+            imageVector = Icons.Filled.Star,
+            contentDescription = "Star icon",
+            tint = AppTheme.colors.secondarySurface,
+            modifier = Modifier.size(24.dp)
         )
     }
 
-//        if (userRating.value > 0) {
-//            Text(text = "Your Rating: ${userRating.value} Stars", modifier = Modifier.padding(top = 16.dp))
-//        }
-    RatingDialog(
-        showDialog = showDialog.value,
-        onDismiss = { showDialog.value = false },
-        onConfirm = { rating ->
-            userRating.value = rating // Save the user's rating
-            showDialog.value = false
-        }
-    )
+    // Dialog Implementation
+    if (showDialog.value) {
+        Dialog(onDismissRequest = { showDialog.value = false }) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(8.dp),
+                color = Color.White, // Set dialog background to white
+                tonalElevation = 8.dp // Optional shadow elevation
+            ) {
+                // Dialog Content
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
 
+                    // Title
+                    Text("Rate this restaurant:", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+
+                    // Rating Stars
+                    Row(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        for (i in 1..5) {
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                contentDescription = null,
+                                tint = if (i <= userRating.value) orange else Color.Gray,
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clickable { userRating.value = i }
+                            )
+                        }
+                    }
+
+                    // OutlinedTextField for the comment
+                    OutlinedTextField(
+                        value = userComment.value, // Access the current comment state
+                        onValueChange = { userComment.value = it }, // Update state on text change
+                        placeholder = { Text("Add a comment") }, // Placeholder text
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        textStyle = TextStyle(fontSize = 16.sp),
+                        label = { Text("Comment") } // Optional 'Comment' label
+                    )
+
+                    // Submit Button
+                    Button(
+                        colors = ButtonColors(
+                            containerColor = orange,
+                            contentColor = white,
+                            disabledContentColor = white,
+                            disabledContainerColor = white
+                        ),
+                        onClick = {
+                            // Make API Call on Submit
+                            CoroutineScope(Dispatchers.IO).launch {
+                                try {
+                                    val apiService = RetrofitInstance.api
+                                    val response = apiService.submitRating(
+                                        restaurantId = restaurantId,
+                                        request = RatingRequest(
+                                            userId = userId,
+                                            rating = userRating.value,
+                                            comment = userComment.value
+                                        )
+                                    )
+                                    Log.d(
+                                        "CircledRatingDialog",
+                                        "Success: ${response.average_rating}"
+                                    )
+                                } catch (e: Exception) {
+                                    Log.e("CircledRatingDialog", "Error: ${e.message}")
+                                }
+                            }
+                            showDialog.value = false // Dismiss dialog
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)
+                    ) {
+                        Text("Submit")
+                    }
+                }
+            }
+        }
+    }
 }
+
+
+
+
 

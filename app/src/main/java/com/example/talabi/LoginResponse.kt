@@ -6,7 +6,37 @@ package com.example.talabi
 //    val userName: String,
 //    val userEmail: String
 //)
+<<<<<<< HEAD
+=======
+data class LoginResponse(
+    val token: String,
+    val userId: Int,
+    val message: String
+)
+data class RatingRequest(
+    val userId: Int,
+    val rating: Int,
+    val comment: String
+)
+>>>>>>> ac6e7596bd857739389115a12814135446cb1dd3
 
+// Response from backend
+data class RatingResponse(
+    val message: String,
+    val average_rating: Float // The backend sends new average after updating
+)
+
+data class RatingFoodRequest(
+    val userId: Int,
+    val rating: Int,
+    val comment: String
+)
+
+// Response from backend
+data class RatingFoodResponse(
+    val message: String,
+    val average_rating: Float // The backend sends new average after updating
+)
 
 data class Loginclass(
 
