@@ -6,6 +6,8 @@ package com.example.talabi
 //    val userName: String,
 //    val userEmail: String
 //)
+<<<<<<< HEAD
+=======
 data class LoginResponse(
     val token: String,
     val userId: Int,
@@ -16,6 +18,7 @@ data class RatingRequest(
     val rating: Int,
     val comment: String
 )
+>>>>>>> ac6e7596bd857739389115a12814135446cb1dd3
 
 // Response from backend
 data class RatingResponse(

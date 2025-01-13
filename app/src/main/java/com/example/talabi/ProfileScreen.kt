@@ -2,6 +2,7 @@
 
 package com.example.talabi
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +12,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -22,7 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.talabi.R
+import com.example.talabi.api.RetrofitInstance
+import com.example.talabi.data.User
 import com.example.talabi.ui.theme.orange
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -35,6 +43,40 @@ fun ProfileScreen(
     onNavigateToSignIn: () -> Unit, // Action for logout navigation
     onEditProfile: () -> Unit // Action for editing profile
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
+    val user = remember { mutableStateOf(
+        User(
+            id = 1,
+            name="",
+            email="",
+            phone="",
+            address="",
+            profilePicture = "",
+            password = "",
+        )
+    ) }
+    LaunchedEffect(Unit) {
+
+        coroutineScope.launch {
+            try {
+                val response = RetrofitInstance.api.getUser(1)
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        user.value = responseBody  // Assign the list of restaurants to the state
+                        Log.d("user", "Data fetched successfully: $user")
+                    } else {
+                        Log.e("user", "Empty response body")
+                    }
+                } else {
+                    Log.e("user", "Error fetching data: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("user", "Error: ${e.localizedMessage}")
+            }
+        }
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -59,7 +101,7 @@ fun ProfileScreen(
                                     color = Color.Gray.copy(alpha = 0.1f),
                                     shape = CircleShape
                                 )
-                                .clickable(onClick = onEditProfile)
+                                .clickable{ navController.navigate(Destination.editprofile.getDestination(user.value.id))}
                                 .padding(14.dp),
                             tint = Color.Unspecified
                         )
@@ -103,13 +145,13 @@ fun ProfileScreen(
 
             // User Info
             Text(
-                text = "Ahmed",
+                text = user.value.name,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF000000)
             )
             Text(
-                text = "maamar_ahmed@gmail.com",
+                text = user.value.email,
                 fontSize = 14.sp,
                 color = Color.Gray,
                 textAlign = TextAlign.Center

@@ -164,7 +164,7 @@ import kotlinx.coroutines.launch
 //
 //                DialogScreen()
 //                FloatingActionButton(
-//                    onClick = { /*TODO*/ },
+//                    onClick = {
 //                    containerColor = gray2,
 //                    contentColor = gray,
 //                    modifier = Modifier.size(40.dp)
@@ -272,7 +272,7 @@ import kotlinx.coroutines.launch
 //                        .fillMaxWidth(),
 //                ) {
 //                    CircularAddButton(
-//                        onClick = { /*TODO*/ },
+//                        onClick = {
 //                        content = "+",
 //                        contentColor = Color.White,
 //                        buttonColor = AppTheme.colors.actionSurface,
