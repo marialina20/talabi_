@@ -26,6 +26,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
+import com.example.talabi.Destination
 import com.example.talabi.R
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.model.Post
@@ -37,9 +39,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit,onSignUp: (String, String, String, String) -> Unit = { username, email, phone, password ->
-    signUpUser(username, email, phone, password)
-})  {
+fun RegistrationScreen( onNavigateBack: () -> Unit,
+navController:NavHostController)  {
     val context = LocalContext.current
     val username = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -82,7 +83,7 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
     )
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()) // Makes the page scrollable
             .padding(16.dp),
@@ -303,6 +304,7 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
                         }
                     }
                 }
+                navController.navigate(Destination.home.route)
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = orange, contentColor = white),

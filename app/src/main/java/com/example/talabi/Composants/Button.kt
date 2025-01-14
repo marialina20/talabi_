@@ -1,6 +1,13 @@
 package com.example.talabi.Composants
 
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -55,6 +62,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat
+
 import com.example.talabi.RatingFoodRequest
 import com.example.talabi.RatingRequest
 import com.example.talabi.api.RetrofitInstance
@@ -248,8 +257,9 @@ fun EditableTextDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
 ) {
+    var text = remember { mutableStateOf("") }
     if (showDialog) {
-        var text = remember { mutableStateOf("") }
+
 
         AlertDialog(
             onDismissRequest = onDismiss,
@@ -630,7 +640,7 @@ fun RestaurantRatingDialog(
                     // OutlinedTextField for the comment
                     OutlinedTextField(
                         value = userComment.value, // Access the current comment state
-                        onValueChange = { userComment.value = it }, // Update state on text change
+                        onValueChange = { userComment.value  = it }, // Update state on text change
                         placeholder = { Text("Add a comment") }, // Placeholder text
                         modifier = Modifier
                             .fillMaxWidth()
@@ -682,7 +692,46 @@ fun RestaurantRatingDialog(
     }
 }
 
+@Composable
+fun CallButton(phoneNumber: String) {
+    val context = LocalContext.current // Access the Context
+
+    Button(
+        onClick = {
+            // Create an intent to open the phone dialer
+            val intent = Intent(Intent.ACTION_DIAL).apply {
+                data = Uri.parse("tel:$phoneNumber") // Append the phone number
+            }
+            context.startActivity(intent) // Start the dialer activity
+        },
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Text("Call $phoneNumber")
+    }
+}
+
+@Composable
+fun DirectCallButton(phoneNumber: String) {
+    val context = LocalContext.current // Access the Context
+
+    Button(
+        onClick = {
+
+            // Create an intent to directly place a call
+            val intent = Intent(Intent.ACTION_CALL).apply {
+                data = Uri.parse("tel:$phoneNumber")
+            }
+            // Check if permission is granted (only necessary for direct call)
+
+            context.startActivity(intent) // Start the call activity
+
+        },
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Text("Direct Call $phoneNumber")
+    }
 
 
 
+}
 

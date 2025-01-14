@@ -107,6 +107,7 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
         composable(Destination.LieuPage.route) { DisplayLieuPage(navController) }
         composable(Destination.home.route) { HomeScreen(navController) }
         composable(Destination.search.route) { SearchScreen() }
+      //  composable(Destination.signup.route) { RegistrationScreen(navController=navController, onNavigateBack = {}) }
         composable(Destination.fooddescription.route) { //DisplayItemDiscreption(navController=navController, menuItemid = 8)
                 navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("itemid")?.toInt()
@@ -129,8 +130,7 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
             )
         }
         composable(Destination.signup.route) {
-            RegistrationScreen(
-                modifier = Modifier.fillMaxSize(),
+            RegistrationScreen(navController=navController,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

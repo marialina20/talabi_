@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -110,7 +111,8 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
         modifier = Modifier
             .shadow(shape = RoundedCornerShape(16.dp), elevation = 10.02.dp)
             .padding(bottom = 5.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {  navController.navigate(Destination.fooddescription.getDestination(menuItem.id)) },
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
 
         ) {

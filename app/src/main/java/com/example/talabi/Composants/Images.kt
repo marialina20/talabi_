@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -199,16 +202,16 @@ fun DisplayRestaurantImage3(
 
         ) {
             AsyncImage(
-                      // model = menuList2.logo,
-                model = R.drawable.rimg10,
+                      model = menuList2.logo,
+             //   model = R.drawable.rimg10,
             contentDescription =null,
                 modifier = Modifier.fillMaxWidth())
             Row (
                 modifier = Modifier.padding(30.dp),
-                horizontalArrangement = Arrangement.spacedBy(90.dp)
+                horizontalArrangement = Arrangement.SpaceBetween
             ){
                 Column {
-                    Text(text = menuList2.name, style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold), color = white)
+                    Text(text = menuList2.name, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold), color = white)
                     Row {
                         Icon(
                             imageVector = Icons.Filled.LocationOn,
@@ -241,27 +244,29 @@ fun DisplayRestaurantImage2(
 ){
     val imageRes = when (category) {
         "Italian" -> R.drawable.burger1
-        "Chinese" -> R.drawable.chinese
-        "Pizza" -> R.drawable.pizza1
+        "Chinese" -> R.drawable.img9
+        "Pizza" -> R.drawable.burger1
+
+
         else -> R.drawable.salade // Fallback image
     }
     Card (
         modifier= Modifier
-            .padding(horizontal = 1.dp, vertical = 1.dp)
-
+            .padding(horizontal = 3.dp, vertical = 1.dp)
     ){
         Box (
             modifier = Modifier.background(white)
 
         ) {
             Image(painter = painterResource(id = imageRes), contentDescription =null,
-                modifier = Modifier.fillMaxWidth())
+                modifier = Modifier.fillMaxWidth()//.height(200.dp)
+                         )
             Row (
                 modifier = Modifier.padding(30.dp),
                 horizontalArrangement = Arrangement.spacedBy(90.dp)
             ){
                 Column {
-                    Text(text = category, style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold), color = white)
+                    Text(text = category, style = TextStyle(fontSize = 40.sp, fontWeight = FontWeight.Bold), color = white)
 
                 }
 

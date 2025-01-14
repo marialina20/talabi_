@@ -45,6 +45,8 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.talabi.Composants.CallButton
+import com.example.talabi.Composants.DirectCallButton
 import com.example.talabi.Composants.DisplayRestaurantImage
 import com.example.talabi.Composants.DisplayRestaurantImage2
 import com.example.talabi.Composants.RestaurantMenuItemImage
@@ -118,6 +120,10 @@ fun HomeScreen(navController: NavController) {
                         color = Color(0xFF333A73)
                     )
                 )
+                //CallButton(phoneNumber = "1234567890")
+                DirectCallButton(phoneNumber = "1234567890")
+
+
                 Text(
                     text = "waiting for you !",
                     style = TextStyle(
