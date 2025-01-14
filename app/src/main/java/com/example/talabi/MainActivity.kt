@@ -16,7 +16,6 @@ package com.example.talabi
 
 
 import DisplayCardItems
-import RegistrationScreen
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -38,6 +37,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.ahlem.CategoriesScreen
 import com.example.ahlem.HomeScreen
+import com.example.ahlem.MoreRestaurantsScreen
+import com.example.ahlem.RestaurantDetailsScreen
 import com.example.ahlem.SearchScreen
 import com.example.myapplication.ui.theme.DisplayLieuPage
 import com.example.talabi.data.SettingsScreen
@@ -104,6 +105,13 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
         composable(Destination.Card.route) { DisplayCardItems(navController, sharedViewModel) }
         composable(Destination.Notification.route) { NotifListt() }
         composable(Destination.PayementandAddress.route) { DisplayPayementInfo(userid = 1, orderid = 1,navController) }
+//        composable(
+//            route = "${Destination.LieuPage.route}/{orderId}",
+//            arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+//        ) { backStackEntry ->
+//            val orderId = backStackEntry.arguments?.getInt("orderId") ?: 0
+//            DisplayLieuPage(navController, orderId)
+//        }
         composable(Destination.LieuPage.route) { DisplayLieuPage(navController) }
         composable(Destination.home.route) { HomeScreen(navController) }
         composable(Destination.search.route) { SearchScreen() }
@@ -120,8 +128,8 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
             CategoriesScreen(id = restaurantId,navController)
         }
 
-       // composable(Destination.restaurant_details.route) { RestaurantDetailsScreen() }
-       // composable(Destination.more.route) { MoreRestaurantsScreen() }
+        composable(Destination.restaurant_details.route) { RestaurantDetailsScreen() }
+        composable(Destination.more.route) { MoreRestaurantsScreen() }
         composable(Destination.login.route) {
             LoginScreen(
                 modifier = Modifier.fillMaxSize(),

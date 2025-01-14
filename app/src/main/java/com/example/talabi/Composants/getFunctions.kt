@@ -2,9 +2,10 @@ package com.example.talabi.Composants
 
 import androidx.compose.runtime.Composable
 import com.example.talabi.data.MenuItem
+import com.example.talabi.data.Orders
 import com.example.talabi.data.Restaurant
 import com.example.talabi.data.User
-
+//import com.example.talabi.data.orders
 import com.example.talabi.data.restaurants
 import com.example.talabi.data.users
 
@@ -12,7 +13,7 @@ import com.example.talabi.data.users
 fun getRestaurantById(id: Int): Restaurant? {
     return restaurants.find { it.id == id }
 }
-
+//
 //@Composable
 //fun getMenuItemById(id: Int): MenuItem? {
 //    return menuItems.find { it.id == id }
@@ -22,6 +23,6 @@ fun getUserById(id: Int): User? {
     return users.find { it.id == id }
 }
 //@Composable
-//fun getOrderById(id: Int): Order? {
-//    return orders.find { it.id == id }
+//fun getOrderById(id: Int): Orders? {
+//    return orde
 //}

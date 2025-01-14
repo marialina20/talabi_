@@ -1,6 +1,5 @@
 package com.example.talabi.Composants
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +26,6 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -46,13 +39,6 @@ import androidx.compose.ui.unit.sp
 import com.example.talabi.ui.theme.orange
 import com.example.talabi.ui.theme.white
 import coil.compose.AsyncImage
-import com.example.talabi.Location
-import com.example.talabi.Menu
-import com.example.talabi.R
-import com.example.talabi.Restaurant
-import com.example.talabi.SocialMediaLinks
-import com.example.talabi.api.RetrofitInstance
-import kotlinx.coroutines.launch
 
 @Composable
 fun MenuItemImage(image: String,imagesize:Int= 100){
@@ -139,51 +125,7 @@ fun DisplayRestaurantImage(
                     CirculedOutlineButton(sizeButton = 37, sizeIcon =23 , imageVector = Icons.Filled.Notifications, containerColor = Color.Unspecified, borderStroke = 1f, onClick = {}, borderColor = white)
                   //  CirculedOutlineButton(sizeButton = 37, sizeIcon =23 , imageVector = Icons.Filled.Star, containerColor = Color.Unspecified, borderStroke = 1f,onClick = { RatingDialog()}, borderColor = white)
                    // RatingDialog()
-                    RestaurantRatingDialog(6, userId = 1,sizeButton = 37,
-                        containerColor = Color.Unspecified,
-                        borderStroke = 1f,
-                        borderColor = Color.Black) }
-            }
-
-
-        }
-
-    }
-}
-
-@Composable
-fun DisplayRestaurantImage3(
-    restaurantId:String
-){
-    val coroutineScope = rememberCoroutineScope()
-    var menuList2 by remember { mutableStateOf(Restaurant(
-        id = 1,
-        name = "Pizza Palace",
-        logo = "photo1",
-        address = "123 Main Street",
-        location = Location(x = 40.7128, y = -74.006),
-        cuisine_type = "Italian",
-        average_rating = 4.5,
-        number_of_reviews = 150,
-        contact_phone = "123-456-7890",
-        contact_email = "info@pizzapalace.com",
-        social_media_links = SocialMediaLinks(
-            facebook = "facebook.com/pizzapalace",
-            instagram = "instagram.com/pizzapalace"
-        )
-    )
-    ) }
-    LaunchedEffect(restaurantId) {
-        coroutineScope.launch {
-            try {
-                // Fetch menu items by restaurant ID
-                val response = RetrofitInstance.api.getRestaurantById(restaurantId)
-                if (response.isSuccessful) {
-                    menuList2 = response.body()!!
-                    Log.e("lisssttttttttttttttttt", "Error: ${menuList2}")
-                } else {
-                    Log.e("Restauranssssssssssssssssssss", "Error: ${response.code()}")
-
+                    CircledRatingDialog(sizeButton = 37, containerColor = Color.Unspecified, borderStroke = 1f, onClick = {}, borderColor = white)
                 }
             } catch (e: Exception) {
                 Log.e("RestaurantMenuScreen", "Error fetching menu: ${e.localizedMessage}")

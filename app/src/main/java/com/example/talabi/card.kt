@@ -532,13 +532,25 @@ fun DisplayCardItems(navController: NavHostController,
 
 
 
+//                    ExtendedButton(
+//                        content = "Checkout",
+//                        imageVector = Icons.Filled.ShoppingCart,
+//                        onClick = {
+//                            navController.navigate("lieuPage/$orderId")
+//                            // Navigate to LieuPage
+//                        }
+//                    )
                     ExtendedButton(
                         content = "Checkout",
                         imageVector = Icons.Filled.ShoppingCart,
                         onClick = {
-                      })
+                            navController.navigate("lieuPage") // Navigate to LieuPage
+                        }
+                    )
 
-               }
+
+
+                }
             }
 
         }

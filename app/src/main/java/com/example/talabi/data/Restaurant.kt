@@ -29,5 +29,3 @@ val restaurants = listOf(
     Restaurant(10, "Seafood Shack", "seafood_logo.jpg",R.drawable.rimg10, "707 Ocean Drive", -33.8688 to 151.2093, "Seafood", 4.9f, 220, "5555556666", "contact@seafoodshack.com", mapOf("Instagram" to "insta.com/seafoodshack"))
 )
 
-
-

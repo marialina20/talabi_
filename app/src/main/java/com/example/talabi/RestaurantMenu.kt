@@ -48,12 +48,11 @@ import androidx.navigation.NavHostController
 import androidx.privacysandbox.tools.core.model.Types.unit
 import com.example.talabi.Composants.CircularAddButton
 import com.example.talabi.Composants.DisplayRestaurantImage
-import com.example.talabi.Composants.DisplayRestaurantImage3
 import com.example.talabi.Composants.MenuItemImage
-import com.example.talabi.Composants.StarWithRatingDialog
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.OrderItem
 import com.example.talabi.ui.theme.AppTheme
+import com.example.talabi.ui.theme.blue
 import com.example.talabi.ui.theme.orange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +72,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
    // val menu= remember { menuItems}
     Column (modifier = Modifier
         .padding(vertical = 24.dp, horizontal = 8.dp)) {
-        DisplayRestaurantImage3(restaurantId)
+        DisplayRestaurantImage(restau_id = 1)
         Spacer(modifier = Modifier.height(12.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -112,7 +111,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
             .shadow(shape = RoundedCornerShape(16.dp), elevation = 10.02.dp)
             .padding(bottom = 5.dp)
             .fillMaxWidth()
-            .clickable {  navController.navigate(Destination.fooddescription.getDestination(menuItem.id)) },
+            .clickable { navController.navigate(Destination.fooddescription.getDestination(menuItem.id)) },
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
 
         ) {
@@ -135,7 +134,8 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                     style = TextStyle(
                         fontStyle = FontStyle.Italic,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = blue
                     )
 
                 )
@@ -147,10 +147,15 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(3.dp),
                     ) {
-                        StarWithRatingDialog(menuItem.id,1)
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Star",
+                            tint = AppTheme.colors.secondarySurface, // Change the icon color
+                            modifier = Modifier.size(24.dp) // Change the icon size
+                        )
                         Text(
                             text = " ${menuItem.average_rating}",
-                            style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp)
+                            style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp,color = blue)
                         )
                         //Text(text = " ${menuItem.price}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
                     }

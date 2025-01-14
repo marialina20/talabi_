@@ -31,23 +31,22 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
+
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Dp
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -57,20 +56,23 @@ import com.example.talabi.R
 import com.example.talabi.ui.theme.gray
 import com.example.talabi.ui.theme.gray2
 import com.example.talabi.ui.theme.white
+import kotlinx.coroutines.launch
+
+import com.example.talabi.api.RetrofitInstance
+import com.example.talabi.api.SimpleApi
+
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
-
+//fun DisplayLieuPage(navController: NavHostController, orderId: Int) {
 fun DisplayLieuPage(navController: NavHostController) {
-    //paddingValues: PaddingValues
     val addressText = remember { mutableStateOf("") }
     val specialInstructions = remember { mutableStateOf("") }
-    Box (
+    val coroutineScope = rememberCoroutineScope()
+
+    Box(
         modifier = Modifier.fillMaxSize()
-    ){
-
-
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(25.dp))
             Box(
@@ -78,52 +80,35 @@ fun DisplayLieuPage(navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(1.dp)
             ) {
-                //  Spacer(modifier = Modifier.height(100.dp))
                 Image(
                     painter = painterResource(R.drawable.img_5),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(250.dp)
-                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomEnd = 24.dp, bottomStart = 24.dp)),
-                       // .shadow(elevation = 10.dp, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomEnd = 24.dp, bottomStart = 24.dp)),
+                        .clip(RoundedCornerShape(24.dp)),
                     contentScale = ContentScale.Crop
-
                 )
                 TopBar(
-                    content = "Titre ou Description",
+                    content = "Adresse de Livraison",
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    onClick = {navController.navigate(Destination.PayementandAddress.route)},
+                    onClick = { navController.navigate(Destination.PayementandAddress.route) },
                     padding = 20,
                     contentColor = white
                 )
-
-
             }
-
-
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    //.clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                   // .shadow(elevation = 10.dp, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                    .background(Color.White) // Fond blanc
+                    .background(Color.White)
                     .padding(horizontal = 16.dp, vertical = 16.dp)
-                // .align(Alignment.BottomCenter)
             ) {
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-//                Image(
-//                    painter = painterResource(R.drawable.img_6),
-//                    contentDescription = null,
-//                    modifier = Modifier.size(32.dp),
-//                    contentScale = ContentScale.Crop
-//                )
                     Icon(
                         imageVector = Icons.Filled.LocationOn,
                         contentDescription = "",
@@ -156,15 +141,12 @@ fun DisplayLieuPage(navController: NavHostController) {
                         focusedIndicatorColor = gray2,
                         unfocusedIndicatorColor = gray,
                         cursorColor = gray,
-                        focusedLabelColor = gray// Placeholder color
+                        focusedLabelColor = gray
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = {
-                        Text(
-                            "ex: maison Numero 10 , City KDA KDA .",
-                        )
+                        Text("ex: maison Numero 10, City KDA KDA.")
                     },
-
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
@@ -172,7 +154,6 @@ fun DisplayLieuPage(navController: NavHostController) {
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-
 
                 Text(
                     text = "Ajouter des instructions spéciales:",
@@ -184,21 +165,16 @@ fun DisplayLieuPage(navController: NavHostController) {
                 TextField(
                     value = specialInstructions.value,
                     onValueChange = { specialInstructions.value = it },
-                    colors = TextFieldDefaults.run {
-                        textFieldColors(
-                            containerColor = Color.Transparent,
-                            focusedIndicatorColor = gray2,
-                            unfocusedIndicatorColor = gray,
-                            cursorColor = gray,
-                            focusedLabelColor = gray// Placeholder color
-                        )
-                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color.Transparent,
+                        focusedIndicatorColor = gray2,
+                        unfocusedIndicatorColor = gray,
+                        cursorColor = gray,
+                        focusedLabelColor = gray
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = {
-                        Text(
-                            "ex: Kayen doura capable ttlaflak fiha " +
-                                    "brozer , ki towsel 3nd doura t3 sbitar 3awed weli ldarkom , coghdialemen",
-                        )
+                        Text("Ajouter des détails supplémentaires...")
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -208,21 +184,37 @@ fun DisplayLieuPage(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-
-
-
-
                 Button(
                     onClick = {
-                        navController.navigate(Destination.PayementandAddress.route)
+                        coroutineScope.launch {
+                            try {
+                                val updateRequest = SimpleApi.UpdateDeliveryRequest(
+                                    delivery_address = addressText.value,
+                                    delivery_notes = specialInstructions.value
+                                )
+                               // val call = RetrofitInstance.api.updateDeliveryDetails(orderId, updateRequest)
+                                val call = RetrofitInstance.api.updateDeliveryDetails(1, updateRequest)
+                                val response = call.execute() // Execute the API call synchronously
+
+                                if (response.isSuccessful) {
+                                    // Navigate back on success
+                                    navController.navigate(Destination.PayementandAddress.route)
+                                } else {
+                                    // Show an error message
+                                    println("Error: ${response.errorBody()?.string()}")
+                                }
+                            } catch (e: Exception) {
+                                // Handle exception (e.g., network issue)
+                                println("Exception: ${e.message}")
+                            }
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFE8C00) // Couleur personnalisée
+                        containerColor = Color(0xFFFE8C00) // Custom color
                     )
-
                 ) {
                     Text(text = "Confirmer ma commande", fontSize = 16.sp)
                 }

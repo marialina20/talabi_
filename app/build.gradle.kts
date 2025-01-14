@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.example.talabi"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -66,7 +66,6 @@ dependencies {
     implementation(libs.androidx.tools.core)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.storage)
     //implementation(libs.play.services.basement)
    // implementation(libs.google.play.services.auth)
     testImplementation(libs.junit)
@@ -93,10 +92,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
-    implementation("io.coil-kt:coil-compose:2.2.2")
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-
-
     implementation("com.google.android.gms:play-services-auth:20.7.0") {
         exclude(group = "com.android.support")
     }

@@ -1,3 +1,5 @@
+package com.example.talabi
+
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +43,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun RegistrationScreen( onNavigateBack: () -> Unit,
 navController:NavHostController)  {
+fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit)  {
     val context = LocalContext.current
     val username = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -52,6 +55,7 @@ navController:NavHostController)  {
     var phoneNumberError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var emailAlreadyUsedError by remember { mutableStateOf<String?>(null) }
+    var registrationSuccess by remember { mutableStateOf(false) }
 
 
     // Google Sign-In setup
@@ -162,19 +166,18 @@ navController:NavHostController)  {
         )
         if (emailError != null) {
             Text(
-                text = emailError!!,
+                text = usernameError!!,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
         }
         if (emailAlreadyUsedError != null) {
             Text(
-                text = emailAlreadyUsedError!!,
+                text = "This email is already used",
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
         }
-
 
         // Phone number field
         OutlinedTextField(
@@ -263,6 +266,11 @@ navController:NavHostController)  {
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email.value).matches()) {
                     emailError = "Please enter a valid email address"
                     isValid = false
+
+                }
+                if (emailAlreadyUsedError != null) {
+                    emailError = "Email address already used "
+
                 }
 
                 if (phoneNumber.value.isEmpty() || !android.util.Patterns.PHONE.matcher(phoneNumber.value).matches()) {
@@ -289,22 +297,26 @@ navController:NavHostController)  {
                             val response = api.pushPost(newUser)
                             withContext(Dispatchers.Main) {
                                 if (response.isSuccessful) {
+                                    registrationSuccess = true
 
                                 } else {
                                     if (response.code() == 409) { // Vérifiez le code 409 pour "Conflict"
-                                        emailAlreadyUsedError = "Email address already used"
+                                        emailAlreadyUsedError = 1.toString()
+                                        Log.e("erroooooooooor email", "Error fetching data: ${response.errorBody()?.string()}")
                                     }
+                                }
 
                                 }
-                            }
+
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
 
                             }
                         }
-                    }
+
                 }
                 navController.navigate(Destination.home.route)
+                    }
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = orange, contentColor = white),
@@ -324,29 +336,29 @@ navController:NavHostController)  {
 
 }
 
-private fun signUpUser(username: String, email: String, phone: String, password: String) {
-    CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val api = RetrofitInstance.api
-            val newUser = Post(
-                userId = 0, // Assign 0 if ID is auto-generated
-                name = username,
-                email = email,
-                phone = phone,
-                password = password
-            )
-            val response = api.pushPost(newUser)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-
-                } else {
-
-                }
-            }
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-
-            }
-        }
-    }
-}
+//private fun signUpUser(username: String, email: String, phone: String, password: String) {
+//    CoroutineScope(Dispatchers.IO).launch {
+//        try {
+//            val api = RetrofitInstance.api
+//            val newUser = Post(
+//                userId = 0, // Assign 0 if ID is auto-generated
+//                name = username,
+//                email = email,
+//                phone = phone,
+//                password = password
+//            )
+//            val response = api.pushPost(newUser)
+//            withContext(Dispatchers.Main) {
+//                if (response.isSuccessful) {
+//
+//                } else {
+//
+//                }
+//            }
+//        } catch (e: Exception) {
+//            withContext(Dispatchers.Main) {
+//
+//            }
+//        }
+//    }
+//}
