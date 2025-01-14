@@ -8,14 +8,14 @@ data class OrderItem(
 )
 data class Orders(
     val id: Int? = null, // Nullable car il est auto-incrémenté par la base de données
-    val userId: Int,     // Clé étrangère vers la table users
-    val restaurantId: Int, // Clé étrangère vers la table restaurants
-    val deliveryAddress: String, // Adresse de livraison
+    val user_d: Int,     // Clé étrangère vers la table users
+    val restaurant_id: Int, // Clé étrangère vers la table restaurants
+    val delivery_address: String, // Adresse de livraison
     val status: OrderStatus, // Énumération pour le statut
-    val totalPrice: Double,  // Prix total de la commande
-    val deliveryNotes: String? = null, // Notes de livraison, optionnel
-    val createdAt: String? = null, // Timestamp de création
-    val updatedAt: String? = null  // Timestamp de mise à jour
+    val total_price: Double,  // Prix total de la commande
+    val delivery_notes: String? = null, // Notes de livraison, optionnel
+    val created_at: String? = null, // Timestamp de création
+    val updated_at: String? = null  // Timestamp de mise à jour
 )
 
 enum class OrderStatus(val value: String) {

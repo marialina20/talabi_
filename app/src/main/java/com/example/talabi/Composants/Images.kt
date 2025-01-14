@@ -198,9 +198,8 @@ fun DisplayRestaurantImage3(
             modifier = Modifier.background(white)
 
         ) {
-            AsyncImage(
-                      // model = menuList2.logo,
-                model = R.drawable.rimg10,
+            AsyncImage(model = menuList2.logo,
+             //   model = R.drawable.rimg10,
             contentDescription =null,
                 modifier = Modifier.fillMaxWidth())
             Row (

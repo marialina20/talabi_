@@ -5,7 +5,7 @@ data class User(
     var name: String,
     var email: String,
     var phone: String,
-    val address: String,
+    val address: String?=null,
     val profilePicture: String? = null,
     val password: String,
     val googleAccountId: String? = null

@@ -113,7 +113,7 @@ fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController,share
             id = menuItemid,
             image = "",
             description = "hhhhh",
-            restaurantId = 0,
+            restaurant_id = 0,
             name = "",
             availability_status = 1,
             average_rating = 4.5f,

@@ -287,12 +287,12 @@ fun EditProfileScreen(
                                     val responseBody = response.body()
                                     if (responseBody != null) {
                                         user.value = responseBody  // Assign the list of restaurants to the state
-                                        Log.d("user", "Data fetched successfully: $user")
+                                        Log.d("s7iiiiiiiiiiiiiiiiiiiiiiiiii7", "Data fetched successfully: $user")
                                     } else {
-                                        Log.e("user", "Empty response body")
+                                        Log.e("nuuuuuuuuuuuuuuuuuul", "Empty response body")
                                     }
                                 } else {
-                                    Log.e("user", "Error fetching data: ${response.errorBody()?.string()}")
+                                    Log.e("ghaaaaaaaaaaaaaaaaaaaaaalt", "Error fetching data: ${response.errorBody()?.string()}")
                                 }
                             } catch (e: Exception) {
                                 Log.e("user", "Error: ${e.localizedMessage}")

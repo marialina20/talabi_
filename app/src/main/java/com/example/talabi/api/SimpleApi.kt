@@ -160,7 +160,7 @@ interface SimpleApi {
     suspend fun getTotal(@Path("orderId") orderId: Int): TotalResponse
     @GET("/api/descriptionfood/{id}")
     suspend fun getMenuItem(@Path("id") menuItemId: Int): MenuItem
-<<<<<<< Updated upstream
+
     @GET("/api/users/{userId}/notifications")
     suspend fun getNotifications(@Path("userId") userId: Int): Response<List<NotificationDto>>
 
@@ -185,9 +185,5 @@ suspend fun updateUserProfile(
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
 
-=======
 
-
-
->>>>>>> Stashed changes
 }
