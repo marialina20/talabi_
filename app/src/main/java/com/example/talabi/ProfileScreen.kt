@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.talabi.R
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.User
 import com.example.talabi.ui.theme.orange
@@ -41,17 +39,19 @@ fun ProfileScreen(
     onNavigateToPaiement: () -> Unit,
     onLogout: () -> Unit,
     onNavigateToSignIn: () -> Unit, // Action for logout navigation
-    onEditProfile: () -> Unit // Action for editing profile
+    onEditProfile: () -> Unit, // Action for editing profile
+    sharedViewModel: SharedViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val useridd = sharedViewModel.UserIdd
 
     val user = remember { mutableStateOf(
         User(
             id = 1,
-            name="",
-            email="",
-            phone="",
-            address="",
+            name ="",
+            email ="",
+            phone ="",
+            address ="",
             profilePicture = "",
             password = "",
         )
@@ -60,7 +60,7 @@ fun ProfileScreen(
 
         coroutineScope.launch {
             try {
-                val response = RetrofitInstance.api.getUser(1)
+                val response = RetrofitInstance.api.getUser(useridd)
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
@@ -101,7 +101,7 @@ fun ProfileScreen(
                                     color = Color.Gray.copy(alpha = 0.1f),
                                     shape = CircleShape
                                 )
-                                .clickable{ navController.navigate(Destination.editprofile.getDestination(user.value.id))}
+                                .clickable{ }
                                 .padding(14.dp),
                             tint = Color.Unspecified
                         )

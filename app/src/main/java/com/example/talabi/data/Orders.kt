@@ -1,23 +1,32 @@
 package com.example.talabi.data
 
+import java.util.Date
+
 data class OrderItem(
-    val userId: Int,         // Pas `orderId` !
+    val userId: Int,
     val menuItemId: Int,
     val quantity: Int,
-    val specialNotes: String? = null // Notes spéciales, optionnel
+    val specialNotes: String? = null
 )
 data class Orders(
-    val id: Int? = null, // Nullable car il est auto-incrémenté par la base de données
-    val user_d: Int,     // Clé étrangère vers la table users
-    val restaurant_id: Int, // Clé étrangère vers la table restaurants
-    val delivery_address: String, // Adresse de livraison
-    val status: OrderStatus, // Énumération pour le statut
-    val total_price: Double,  // Prix total de la commande
-    val delivery_notes: String? = null, // Notes de livraison, optionnel
-    val created_at: String? = null, // Timestamp de création
-    val updated_at: String? = null  // Timestamp de mise à jour
+    val id: Int? = null,
+    val user_id: Int,
+    val restaurant_id: Int,
+    val delivery_address: String,
+    val status: String,
+    val total_price: Double,
+    val delivery_notes: String? = null,
+    val created_at: String? = null,
+    val updated_at: String? = null
+)
+data class UpdateOrderRequestt(
+    val delivery_address: String? = null,
+    val delivery_notes: String? = null
 )
 
+data class UpdateOrderResponsee(
+    val message: String
+)
 enum class OrderStatus(val value: String) {
     PENDING("pending"),
     PREPARING("preparing"),

@@ -24,7 +24,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
@@ -60,9 +62,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
-import com.example.talabi.RatingFoodRequest
-import com.example.talabi.RatingRequest
 import com.example.talabi.api.RetrofitInstance
+import com.example.talabi.data.RatingFoodRequest
+import com.example.talabi.data.RatingRequest
 import com.example.talabi.ui.theme.AppTheme
 import com.example.talabi.ui.theme.blue
 import com.example.talabi.ui.theme.gray
@@ -244,7 +246,6 @@ fun FavoriteCirculedOutlineButton(
     }
 }
 
-//given by chatgpt--------------------------------------------------
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditableTextDialog(
@@ -544,6 +545,7 @@ fun StarWithRatingDialog(
                                 }
                             }
                             showDialog.value = false // Dismiss dialog
+                            Toast.makeText(context, "Item rating subbmitted", Toast.LENGTH_SHORT).show()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -674,6 +676,7 @@ fun RestaurantRatingDialog(
                                 }
                             }
                             showDialog.value = false // Dismiss dialog
+                            Toast.makeText(context, "Rating submitted", Toast.LENGTH_SHORT).show()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -691,8 +694,18 @@ fun RestaurantRatingDialog(
 @Composable
 fun CallButton(phoneNumber: String) {
     val context = LocalContext.current // Access the Context
+//    CirculedOutlineButton(sizeButton = 37, sizeIcon =23 , imageVector = Icons.Filled.Notifications, containerColor = Color.Unspecified, borderStroke = 1f, onClick = {val intent = Intent(Intent.ACTION_DIAL).apply {
+//        data = Uri.parse("tel:$phoneNumber") // Append the phone number
+//    }
+//        context.startActivity(intent) }, borderColor = white)
 
     Button(
+        colors = ButtonColors(
+            containerColor = orange,
+            contentColor = white,
+            disabledContentColor = white,
+            disabledContainerColor = white
+        ),
         onClick = {
             // Create an intent to open the phone dialer
             val intent = Intent(Intent.ACTION_DIAL).apply {
@@ -702,7 +715,8 @@ fun CallButton(phoneNumber: String) {
         },
         modifier = Modifier.padding(16.dp)
     ) {
-        Text("Call $phoneNumber")
+        Icon(imageVector  = Icons.Filled.Call, contentDescription = "")
+      //  Text("Call")
     }
 }
 

@@ -2,6 +2,8 @@ package com.example.talabi.ui.theme
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.text.format.DateUtils.formatDateTime
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,103 +25,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.talabi.Composants.CallButton
 import com.example.talabi.Composants.TopBar
 import com.example.talabi.R
+import com.example.talabi.SharedViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.NotificationDto
-import java.time.format.TextStyle
+import com.example.talabi.data.OrderStatus
+import com.example.talabi.data.Orders
+import kotlinx.coroutines.delay
+import java.time.LocalDateTime
 
-@SuppressLint("SuspiciousIndentation")
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NotifListt() {
-    val userId = 1 // Set userId to 1 for testing
-    var notifications by remember { mutableStateOf<List<NotificationDto>>(emptyList()) }
-    val coroutineScope = rememberCoroutineScope()
-
-    // Fetch notifications from the backend
-    LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            try {
-                val response = RetrofitInstance.api.getNotifications(userId)
-                if (response.isSuccessful) {
-                    notifications = response.body() ?: emptyList()
-                } else {
-                    // Log error if needed
-                }
-            } catch (e: Exception) {
-                // Handle exceptions if needed
-            }
-        }
-    }
-
-    // Group notifications by date
-    val groupedNotifs = groupNotificationsByDate(notifications)
-
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Top bar
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            TopBar(
-                content = "Notifications",
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                onClick = {}
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 110.dp)
-        ) {
-            groupedNotifs.forEach { (group, notifications) ->
-                // Section title
-                item {
-                    Row {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = group,
-                            fontSize = 18.sp,
-                            color = Color(0xFF3F3D56),
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .padding(vertical = 4.dp)
-                                .fillMaxWidth()
-                        )
-                        Divider(
-                            modifier = Modifier
-                                .padding(vertical = 2.dp)
-                                .fillMaxWidth(),
-                            thickness = 1.dp,
-                            color = Color.Gray
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                }
-
-                // Notifications in the group
-                items(notifications) { notif ->
-                    NotifItem(notif)
-                }
-            }
-        }
-    }
-}
-
 @Composable
 fun NotifItem(notif: NotificationDto) {
+
+    val formattedDate = try {
+        // Parse the datetime string and format it
+        val parsedDate = LocalDateTime.parse(notif.updatedAt, DateTimeFormatter.ISO_DATE_TIME)
+        parsedDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm"))
+    } catch (e: Exception) {
+        Log.e("NotifItem", "Error parsing date: ${e.localizedMessage}")
+        notif.updatedAt // Fallback to the raw string if parsing fails
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -129,232 +60,173 @@ fun NotifItem(notif: NotificationDto) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(8.dp)
         ) {
-            Image(
-                painter = painterResource(R.drawable.profile),
-                contentDescription = null,
-                modifier = Modifier.size(32.dp),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text(
-                    text = "Order #${notif.orderId}",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = notif.status)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = notif.updatedAt)
+            // Conditionally set the image resource based on the notification status
+            val imageResource = when (notif.status) {
+                "pending", "canceled" -> R.drawable.modificon
+                "delivered", "on the way" -> R.drawable.img_21
+                "preparing" -> R.drawable.img_20
+                else -> R.drawable.img_20 // Default image if no condition matches
             }
+            Row() {
+
+                Image(
+                    painter = painterResource(imageResource),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp),
+                    contentScale = ContentScale.Crop
+                )
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column {
+                    Row {
+                        Text(
+                            text = "Your Order is :",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = notif.status,
+                            fontSize = 18.sp,
+                            color = orange,
+                            fontWeight = FontWeight.Bold
+                            // Adjusted font size
+                        )
+
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Display the status with a font size of 18
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Format the updatedAt date before displaying
+                    // val formattedDate = formatDateTime(notif.updatedAt)
+                    Row(
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = " $formattedDate")
+
+                    }
+
+
+                }
+            }
+            if (notif.status == "delivered"){
+                CallButton(phoneNumber = "1234567890")
+
         }
+
+    }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun groupNotificationsByDate(notifications: List<NotificationDto>): Map<String, List<NotificationDto>> {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val today = LocalDate.now()
-    val yesterday = today.minusDays(1)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NotifListt(sharedViewModel: SharedViewModel) {
+    val orderId = sharedViewModel.orderId
+    val isOrderConfirmed = sharedViewModel.orderConfirmed
+    var notifications by remember { mutableStateOf<List<NotificationDto>>(emptyList()) }
+    val coroutineScope = rememberCoroutineScope()
+    var previousStatus by remember { mutableStateOf<String?>(null) }
+    var order = remember {
+        mutableStateOf(
+            Orders(
+                id = 1,
+                user_id = 1,
+                restaurant_id = 1,
+                delivery_notes = "",
+                delivery_address = "",
+                total_price = 0.0,
+                created_at = "",
+                updated_at = "",
+                status = "",
+            )
+        )
+    }
 
-    return notifications.groupBy { notif ->
-        val notificationDate = LocalDate.parse(notif.updatedAt, formatter)
-        when {
-            notificationDate == today -> "Aujourd'hui"
-            notificationDate == yesterday -> "Hier"
-            notificationDate.isAfter(today.minusWeeks(1)) -> "Cette semaine"
-            else -> "Plus ancien"
+
+    fun addNotification(newStatus: String) {
+        val newNotification = NotificationDto(
+            orderId = order.value.id!!,
+            status = newStatus,
+            updatedAt = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+        )
+
+        // Avoid duplicates
+        if (!notifications.any { it.status == newStatus && it.orderId == order.value.id }) {
+            notifications = notifications + newNotification
         }
     }
+
+    // Utiliser une variable pour contrôler la boucle
+    var isActive by remember { mutableStateOf(true) }
+
+    // Nettoyer la coroutine quand le composant est détruit
+    DisposableEffect(Unit) {
+        onDispose {
+            isActive = false
+        }
+    }
+
+
+    LaunchedEffect(isOrderConfirmed) {
+        while (isActive) {
+            try {
+                val response = RetrofitInstance.api.getOrderById(orderId)
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        // Check if the status has changed
+                        if (previousStatus != responseBody.status) {
+                            addNotification(responseBody.status)
+                        }
+                        previousStatus = responseBody.status
+                        order.value = responseBody
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("Order", "Error fetching order: ${e.localizedMessage}")
+            }
+
+            delay(5000)
+        }
+    }
+
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Top bar est toujours affiché
+        TopBar(
+            content = "Notifications",
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+            onClick = {}
+        )
+
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 110.dp)
+            ) {
+                item {
+                    Text(
+                        text = "Status Updates",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+
+                items(notifications.reversed()) { notif ->
+                    NotifItem(notif)
+                    HorizontalDivider(modifier = Modifier
+                        .size(500.dp)
+                        .padding(8.dp))
+                }
+            }
+
+    }
 }
-//package com.example.talabi.ui.theme
-//
-//
-//import android.annotation.SuppressLint
-//import android.os.Build
-//import androidx.annotation.RequiresApi
-//import androidx.compose.foundation.Image
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.clickable
-//import androidx.compose.foundation.layout.*
-//import androidx.compose.foundation.lazy.LazyColumn
-//import androidx.compose.foundation.lazy.items
-//import androidx.compose.material.icons.Icons
-//import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-//import androidx.compose.material.icons.filled.KeyboardArrowLeft
-//import androidx.compose.material3.*
-//import androidx.compose.runtime.*
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.layout.ContentScale
-//import androidx.compose.ui.platform.LocalConfiguration
-//import androidx.compose.ui.res.painterResource
-//import androidx.compose.ui.text.font.FontWeight
-//import androidx.compose.ui.unit.Dp
-//import androidx.compose.ui.unit.dp
-//import androidx.compose.ui.unit.sp
-//import com.example.talabi.Composants.TopBar
-//import com.example.talabi.R
-//import com.example.talabi.data.NotifData
-//import com.example.talabi.data.Notification
-//import java.time.LocalDate
-//import java.time.format.DateTimeFormatter
-//
-//
-//@SuppressLint("SuspiciousIndentation")
-//@RequiresApi(Build.VERSION_CODES.O)
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun NotifListt() {
-//    val notifs = remember { mutableStateListOf(*NotifData.notifications.toTypedArray()) }
-//
-//    // Groupe notifications par periodes
-//    val groupedNotifs = groupNotificationsByDate(notifs)
-//
-//
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//
-//        ) {
-//            // En-tête
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(8.dp)
-//            ) {
-////                Image(
-////                    painter = painterResource(R.drawable.img_11),
-////                    contentDescription = null,
-////                    modifier = Modifier.size(44.dp)
-////                )
-//              TopBar(content = "Notifications", imageVector =  Icons.AutoMirrored.Filled.KeyboardArrowLeft, onClick = {})
-//
-//
-////                Spacer(modifier = Modifier.width(80.dp))
-////                Text(
-////                    text = "Notifications",
-////                    fontSize = 20.sp,
-////                    fontWeight = FontWeight.Bold
-////                )
-//            }
-//
-//            Spacer(modifier = Modifier.height(8.dp))
-//            Spacer(modifier = Modifier.width(8.dp))
-//
-//
-//            LazyColumn(
-//                modifier = Modifier.fillMaxSize().padding(bottom=110.dp),
-//
-//                //contentPadding = PaddingValues(16.dp)
-//            ) {
-//
-//                groupedNotifs.forEach { (group, notifications) ->
-//                    // Section title
-//                    item {
-//                        Row {
-//                            Spacer(modifier = Modifier.width(8.dp))
-//                            Text(
-//                                text = group,
-//                                fontSize = 18.sp,
-//                                color = Color(0xFF3F3D56),
-//                                fontWeight = FontWeight.Bold,
-//                                modifier = Modifier
-//                                    .padding(vertical = 4.dp)
-//                                    .fillMaxWidth()
-//                            )
-//                            Divider(
-//                                modifier = Modifier
-//                                    .padding(vertical = 2.dp)
-//                                    .fillMaxWidth(),
-//                                thickness = 1.dp,
-//                                color = Color.Gray
-//                            )
-//                            Spacer(modifier = Modifier.height(8.dp))
-//                        }
-//                    }
-//
-//                    // Notifications de la section
-//                    items(notifications) { notif ->
-//                        NotifItem(notif) { clickedNotif ->
-//                            val index = notifs.indexOf(clickedNotif)
-//                            if (index != -1) {
-//                                notifs[index] = clickedNotif.copy(isOpened = true)
-//                            }
-//                        }
-//                    }
-//                }
-//
-//
-//            }
-//        }
-//    }
-//
-//
-//@Composable
-//fun NotifItem(notif: Notification, onNotifClick: (Notification) -> Unit) {
-//    val screenWidthDp: Dp = with(LocalConfiguration.current) {
-//        screenWidthDp.dp
-//    }
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(vertical = 2.dp)
-//            .background(if (!notif.isOpened) Color(0xFFB3B1B1) else Color.Transparent) // Jaune si non ouvert
-//            .clickable { onNotifClick(notif) }
-//    ) {
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            modifier = Modifier.padding(8.dp)
-//        ) {
-//            Image(
-//                painter = painterResource(notif.img),
-//                contentDescription = null,
-//                modifier = Modifier.size(32.dp),
-//                contentScale = ContentScale.Crop
-//            )
-//            Spacer(modifier = Modifier.width(8.dp))
-//            Column {
-//                Text(
-//                    text = notif.nom,
-//                    fontSize = 20.sp,
-//                    fontWeight = FontWeight.Bold
-//                )
-//                Spacer(modifier = Modifier.height(4.dp))
-//                Text(text = notif.timee)
-//            }
-//        }
-//        Spacer(modifier = Modifier.height(4.dp))
-//       /* Divider(
-//            modifier = Modifier
-//                .padding(vertical = 2.dp)
-//                .fillMaxWidth(),
-//            thickness = 1.dp,
-//            color = Color.Black
-//        )*/
-//
-//    }
-//}
-//
-//@RequiresApi(Build.VERSION_CODES.O)
-//fun groupNotificationsByDate(notifications: List<Notification>): Map<String, List<Notification>> {
-//    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-//    val today = LocalDate.now()
-//    val yesterday = today.minusDays(1)
-//
-//    return notifications.groupBy { notif ->
-//        val notificationDate = LocalDate.parse(notif.timee, formatter)
-//        when {
-//            notificationDate == today -> "Aujourd'hui"
-//            notificationDate == yesterday -> "Hier"
-//            notificationDate.isAfter(today.minusWeeks(1)) -> "Cette semaine"
-//            else -> "Plus ancien"
-//        }
-//    }
-//}
-//
-//
-//

@@ -1,3 +1,5 @@
+package com.example.talabi
+
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +28,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
+import com.example.talabi.Destination
 import com.example.talabi.R
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.model.Post
@@ -37,9 +41,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit,onSignUp: (String, String, String, String) -> Unit = { username, email, phone, password ->
-    signUpUser(username, email, phone, password)
-})  {
+fun RegistrationScreen( sharedViewModel:SharedViewModel,onNavigateBack: () -> Unit,
+navController:NavHostController)  {
     val context = LocalContext.current
     val username = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -51,7 +54,9 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
     var phoneNumberError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var emailAlreadyUsedError by remember { mutableStateOf<String?>(null) }
+    var registrationSuccess by remember { mutableStateOf(false) }
 
+    val coroutineScope = rememberCoroutineScope()
 
     // Google Sign-In setup
     val RC_SIGN_IN = 9001
@@ -82,7 +87,7 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
     )
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()) // Makes the page scrollable
             .padding(16.dp),
@@ -161,19 +166,18 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
         )
         if (emailError != null) {
             Text(
-                text = emailError!!,
+                text = usernameError!!,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
         }
         if (emailAlreadyUsedError != null) {
             Text(
-                text = emailAlreadyUsedError!!,
+                text = "This email is already used",
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
         }
-
 
         // Phone number field
         OutlinedTextField(
@@ -262,6 +266,11 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email.value).matches()) {
                     emailError = "Please enter a valid email address"
                     isValid = false
+
+                }
+                if (emailAlreadyUsedError != null) {
+                    emailError = "Email address already used "
+
                 }
 
                 if (phoneNumber.value.isEmpty() || !android.util.Patterns.PHONE.matcher(phoneNumber.value).matches()) {
@@ -273,36 +282,50 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
                     passwordError = "Password must be at least 8 characters"
                     isValid = false
                 }
+                val newUser = Post(
+                    userId = 0, // Assign 0 if ID is auto-generated
+                    name = username.value,
+                    email = email.value,
+                    phone = phoneNumber.value,
+                    password = password.value
+                )
 
                 if (isValid) {
-                    CoroutineScope(Dispatchers.IO).launch {
+                    coroutineScope.launch {
                         try {
                             val api = RetrofitInstance.api
-                            val newUser = Post(
-                                userId = 0, // Assign 0 if ID is auto-generated
-                                name = username.value,
-                                email = email.value,
-                                phone = phoneNumber.value,
-                                password = password.value
-                            )
+
                             val response = api.pushPost(newUser)
                             withContext(Dispatchers.Main) {
                                 if (response.isSuccessful) {
+                                    navController.navigate(Destination.login.route)
+                                    Log.e("usrrrrrrrrrrrrrrr", " ${response.body()!!.name}")
+                                    Log.e("usrrrrrrrrrrrrrrr", " ${response.body()!!.id}")
+                                    registrationSuccess = true
+
+                                    Log.e("shhhhhhhhhhshhhhhhh", " ${sharedViewModel.UserIdd}")
 
                                 } else {
                                     if (response.code() == 409) { // Vérifiez le code 409 pour "Conflict"
-                                        emailAlreadyUsedError = "Email address already used"
+                                        emailAlreadyUsedError = 1.toString()
+                                        Log.e("erroooooooooor email", "Error fetching data: ${response.errorBody()?.string()}")
+                                    } else {
+
                                     }
+                                }
 
                                 }
-                            }
+
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
 
                             }
                         }
-                    }
+
                 }
+
+                    }
+                Toast.makeText(context, "Account created successfully", Toast.LENGTH_SHORT).show()
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = orange, contentColor = white),
@@ -322,29 +345,4 @@ fun RegistrationScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit
 
 }
 
-private fun signUpUser(username: String, email: String, phone: String, password: String) {
-    CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val api = RetrofitInstance.api
-            val newUser = Post(
-                userId = 0, // Assign 0 if ID is auto-generated
-                name = username,
-                email = email,
-                phone = phone,
-                password = password
-            )
-            val response = api.pushPost(newUser)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
 
-                } else {
-
-                }
-            }
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-
-            }
-        }
-    }
-}

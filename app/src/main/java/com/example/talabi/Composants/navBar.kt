@@ -1,6 +1,4 @@
 package com.example.talabi.ui.theme
-
-
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.navigation.compose.rememberNavController
 import com.example.talabi.Destination
 import com.example.talabi.NavigationScreen
+import com.example.talabi.UserPreferences
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

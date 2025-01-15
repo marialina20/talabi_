@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -33,7 +34,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -53,7 +56,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MenuItemImage(image: String,imagesize:Int= 100){
-   // val menuItem= getMenuItemById(id = menuItemid)
+    // val menuItem= getMenuItemById(id = menuItemid)
     Box (
         //modifier = Modifier.background(AppTheme.colors.onBackground)
     ){
@@ -83,13 +86,13 @@ fun MenuItemImage(image: String,imagesize:Int= 100){
 }
 @Composable
 fun CardItemImage(image:String ){
-   // val menuItem= getMenuItemById(id = menuItemid)
+    // val menuItem= getMenuItemById(id = menuItemid)
     Box (
         //modifier = Modifier.background(AppTheme.colors.onBackground)
     ){
         AsyncImage(
             model = image,
-             contentDescription = null,
+            contentDescription = null,
             contentScale  = ContentScale.Crop,
             modifier = Modifier
                 .padding(8.dp)
@@ -134,8 +137,8 @@ fun DisplayRestaurantImage(
                 ){
                     CirculedOutlineButton(sizeButton = 37, sizeIcon =23 , imageVector = Icons.Filled.Search, containerColor = Color.Unspecified, borderStroke = 1f, onClick = {}, borderColor = white)
                     CirculedOutlineButton(sizeButton = 37, sizeIcon =23 , imageVector = Icons.Filled.Notifications, containerColor = Color.Unspecified, borderStroke = 1f, onClick = {}, borderColor = white)
-                  //  CirculedOutlineButton(sizeButton = 37, sizeIcon =23 , imageVector = Icons.Filled.Star, containerColor = Color.Unspecified, borderStroke = 1f,onClick = { RatingDialog()}, borderColor = white)
-                   // RatingDialog()
+                    //  CirculedOutlineButton(sizeButton = 37, sizeIcon =23 , imageVector = Icons.Filled.Star, containerColor = Color.Unspecified, borderStroke = 1f,onClick = { RatingDialog()}, borderColor = white)
+                    // RatingDialog()
                     RestaurantRatingDialog(6, userId = 1,sizeButton = 37,
                         containerColor = Color.Unspecified,
                         borderStroke = 1f,
@@ -199,14 +202,14 @@ fun DisplayRestaurantImage3(
 
         ) {
             AsyncImage(model = menuList2.logo,
-             //   model = R.drawable.rimg10,
-            contentDescription =null,
+                //   model = R.drawable.rimg10,
+                contentDescription =null,
                 modifier = Modifier.fillMaxWidth())
             Row (
                 modifier = Modifier.padding(30.dp),
                 horizontalArrangement = Arrangement.spacedBy(90.dp)
             ){
-                Column {
+                Column() {
                     Text(text = menuList2.name, style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold), color = white)
                     Row {
                         Icon(
@@ -214,8 +217,55 @@ fun DisplayRestaurantImage3(
                             contentDescription = "",
                             tint = white
                         )
-                        Text(text = menuList2.address, style = TextStyle(fontSize = 16.sp), color = white)
+                        Text(text = menuList2.address, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = white)
+
                     }
+                   // Text(modifier =Modifier.shadow(132.dp, shape = ) , text = menuList2.cuisine_type, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = white)
+                    Text(
+                        text = menuList2.cuisine_type,
+                        modifier = Modifier.padding(8.dp),
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            shadow = Shadow(
+                                color = Color.Black, // Shadow color
+                                offset = Offset(8f, 8f), // Shadow offset in x and y directions
+                                blurRadius = 8f // How much to blur the shadow
+                            )
+                        ),
+                        color = Color.White // Main text color
+                    )
+                    Text(
+                        text = menuList2.contact_phone,
+                        modifier = Modifier.padding(8.dp),
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            shadow = Shadow(
+                                color = Color.Black, // Shadow color
+                                offset = Offset(4f, 4f), // Shadow offset in x and y directions
+                                blurRadius = 8f // How much to blur the shadow
+                            )
+                        ),
+                        color = Color.White // Main text color
+                    )
+                    Text(
+                        text = menuList2.contact_email,
+                        modifier = Modifier.padding(8.dp),
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            shadow = Shadow(
+                                color = Color.Black, // Shadow color
+                                offset = Offset(8f, 8f), // Shadow offset in x and y directions
+                                blurRadius = 8f // How much to blur the shadow
+                            )
+                        ),
+                        color = Color.White // Main text color
+                    )
+                    //Text(text = menuList2.contact_phone, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = white)
+
+                    //Text(text = menuList2.contact_email, style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = white)
                 }
                 Column (
                     verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -241,7 +291,11 @@ fun DisplayRestaurantImage2(
     val imageRes = when (category) {
         "Italian" -> R.drawable.burger1
         "Chinese" -> R.drawable.chinese
-        "Pizza" -> R.drawable.pizza1
+      //  "Pizza" -> R.drawable.pizza1
+        "Indian" -> R.drawable.img4
+        "Japanese" -> R.drawable.img9
+        "Mexican" -> R.drawable.img3
+        "American" -> R.drawable.img10
         else -> R.drawable.salade // Fallback image
     }
     Card (
@@ -271,46 +325,7 @@ fun DisplayRestaurantImage2(
 
     }
 }
-//@Composable
-//fun DescriptionItemImage(menuItemid: Int,imagesize:Int= 100){
-//   // val menuItem= getMenuItemById(id = menuItemid)
-//    Box (
-//        modifier = Modifier.background(orange)
-//    ){
-//        Card(
-//            modifier = Modifier
-//                .background(Color.White)
-//                .shadow(2.dp, shape = RoundedCornerShape(corner = CornerSize(16.dp)),),
-//            shape = RoundedCornerShape(16.dp),
-//            colors = CardColors(
-//                containerColor = white,
-//                contentColor = Color.Transparent,
-//                disabledContentColor = Color.Unspecified,
-//                disabledContainerColor = Color.Unspecified
-//            )
-//
-//        ) {
-//            AsyncImage(model = menuItemid!!.image, contentDescription = null,
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    //.padding(5.dp)
-//                    .size(height = 200.dp, width = 1000.dp)
-//                    .clip(RoundedCornerShape(corner = CornerSize(16.dp))))
-//
-//        }
-//        Row (
-//            modifier = Modifier.offset(x=265.dp,y=5.dp),
-//            //horizontalArrangement = Arrangement.End
-//
-//        ){
-//            FavoriteCirculedOutlineButton(imageVector = Icons.Filled.Favorite, sizeButton = 50, sizeIcon = 30, containerColor = Color(0xfFf1ebe9), borderStroke = 0.001f, borderColor = white,
-//            )
-//
-//        }
-//
-//    }
-//}
+
 @Composable
 fun RestaurantMenuItemImage(image: String,imagesize:Int= 130){
     // val menuItem= getMenuItemById(id = menuItemid)
@@ -324,20 +339,6 @@ fun RestaurantMenuItemImage(image: String,imagesize:Int= 130){
                 .padding(8.dp)
                 .size(imagesize.dp)
                 .clip(RoundedCornerShape(corner = CornerSize(16.dp))))
-//        Row (
-//            modifier = Modifier.offset(x=75.dp,y=20.dp),
-//            //horizontalArrangement = Arrangement.End
-//
-//        ){
-//            FavoriteCirculedOutlineButton(
-//                imageVector = Icons.Filled.Favorite,
-//                sizeButton = 30,
-//                sizeIcon = 20,
-//                containerColor = Color(0xfFf1ebe9),
-//                borderStroke = 0.001f,
-//                borderColor = white,
-//            )
-//
-//        }
+
     }
 }

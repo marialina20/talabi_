@@ -1,40 +1,8 @@
 package com.example.talabi
 
-//data class LoginResponse(
-//    val message: String,
-//    val userId: Int,
-//    val userName: String,
-//    val userEmail: String
-//)
 
-data class LoginResponse(
-    val token: String,
-    val userId: Int,
-    val message: String
-)
-data class RatingRequest(
-    val userId: Int,
-    val rating: Int,
-    val comment: String
-)
 
-// Response from backend
-data class RatingResponse(
-    val message: String,
-    val average_rating: Float // The backend sends new average after updating
-)
 
-data class RatingFoodRequest(
-    val userId: Int,
-    val rating: Int,
-    val comment: String
-)
-
-// Response from backend
-data class RatingFoodResponse(
-    val message: String,
-    val average_rating: Float // The backend sends new average after updating
-)
 
 data class Loginclass(
 
@@ -45,7 +13,7 @@ data class Loginclass(
 data class Restaurant(
     val id: Int,
     val name: String,
-    val logo: String,  // Nullable because logo can be null
+    val logo: String,
     val address: String,
     val location: Location,
     val cuisine_type: String,
@@ -72,7 +40,7 @@ data class Menu(
     val id: Int,
     val restaurant_id: Int,
     val name: String,
-    val description: String,  // Nullable because logo can be null
+    val description: String,
     val image: String,
     val price: String,
     val availability_status: Int,

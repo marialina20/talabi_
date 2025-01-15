@@ -1,6 +1,7 @@
 package com.example.talabi
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -53,6 +55,7 @@ import com.example.talabi.Composants.CircularAddButton
 import com.example.talabi.Composants.ExtendedButton
 import com.example.talabi.Composants.FavoriteCirculedOutlineButton
 import com.example.talabi.Composants.RatingDialog
+import com.example.talabi.Composants.StarWithRatingDialog
 import com.example.talabi.Composants.TopBar
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.api.RetrofitInstance.api
@@ -72,42 +75,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController,sharedViewModel: SharedViewModel) {
-//    var menuItem by remember { mutableStateOf(
-//        MenuItem(
-//            id = menuItemid,
-//            image = "",
-//            description = "hhhhh",
-//            restaurantId = 0,
-//            name = "",
-//            availability_status = true,
-//            average_rating = 4.5f,
-//            price = 0.0
-//        )
-//    ) }
-//    val coroutineScope = rememberCoroutineScope()
-//
-//    var isLoading = remember { mutableStateOf(true) }
-//    var errorMessage = remember { mutableStateOf<String?>(null) }
-//
-//    LaunchedEffect(menuItemid) {
-//        coroutineScope.launch {
-//            try {
-//                //isLoading.value = true
-//                errorMessage.value = null
-//                val response = RetrofitInstance.api.getMenuItem(menuItemid)
-//                menuItem = response
-//                println("444444444444444444444")
-//                println(menuItem)
-//                // menuItem=menuItems
-//            } catch (e: Exception) {
-//                errorMessage.value = "Erreur lors du chargement des données : ${e.message}"
-//            } finally {
-//                isLoading.value = false
-//            }
-//        }
-//    }
-//    println("99999999999999999999999999")
-//    println(menuItem)
+    println("-----------------------------${menuItemid}")
     var menuItem by remember { mutableStateOf(
         MenuItem(
             id = menuItemid,
@@ -120,7 +88,8 @@ fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController,share
             price = 0.0
         )
     ) }
-
+    val userid = sharedViewModel.UserIdd
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     val isLoading = remember { mutableStateOf(true) }
@@ -225,7 +194,8 @@ fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController,share
                 )
                 {
 
-                    RatingDialog()
+//                    RatingDialog()
+                    StarWithRatingDialog(menuItem.id,userid)
                     Text(
                         text = " ${menuItem.average_rating}",
                         style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 16.sp)
@@ -263,7 +233,7 @@ fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController,share
                         try {
 
                             val newUser = OrderItem(
-                                userId = 2,           // Remplacez `orderId` par `userId`
+                                userId = sharedViewModel.UserIdd,           // Remplacez `orderId` par `userId`
                                 menuItemId = menuItem.id,
                                 quantity = 1,         // Assurez-vous qu'une valeur > 0 est utilisée
                                 specialNotes = ""
@@ -284,6 +254,7 @@ fun DisplayItemDiscreption(menuItemid:Int,navController: NavHostController,share
                         }
                     }
 
+                    Toast.makeText(context, "Item added to your Order", Toast.LENGTH_SHORT).show()
                 })
             }
 

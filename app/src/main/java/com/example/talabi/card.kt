@@ -91,15 +91,10 @@ import retrofit2.Response
 fun DisplayCardItems(navController: NavHostController,
                      sharedViewModel: SharedViewModel
 ) {
+    println("********************${sharedViewModel.orderCreated}")
     var currentQuantity by remember { mutableStateOf(1) }
 
     var specialNotes by remember { mutableStateOf("") }
-//    val updateRequest = UpdateOrderItemRequest(
-//        orderItemId = 1, // Replace with the actual orderItemId
-//        quantity = quantity, // Default to 1 if not entered
-//        specialNotes = if (specialNotes.isNotBlank()) specialNotes else null
-//    )
-    //var numberofItem = 0
     val orderId = sharedViewModel.orderId
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
@@ -108,13 +103,16 @@ fun DisplayCardItems(navController: NavHostController,
     var prixtotal = remember { mutableStateOf(0.0)  }
     var menuList by remember { mutableStateOf<List<MenuItems>>(emptyList()) }
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(orderId) {
+    if (!sharedViewModel.orderCreated){LaunchedEffect(orderId) {
         coroutineScope.launch {
             try {
                 // Fetch menu items by restaurant ID
-                val response = RetrofitInstance.api.getOrderItems(1)
+                val response = RetrofitInstance.api.getOrderItems(orderId)
                 if (response.isSuccessful) {
                     menuList = response.body() ?: emptyList()
+
+
+
                     Log.d("khaaaaaaayraaaaaaaa", "Error: ${menuList}")
                 } else {
                     Log.e("hnnnnnnnnnnnnnnaaaaaaaaaaa", ": ${response.code()}")
@@ -124,6 +122,7 @@ fun DisplayCardItems(navController: NavHostController,
                 Log.e("RestaurantMenuScreen", "Error fetching menu: ${e.localizedMessage}")
             }
         }
+    }}else{menuList= emptyList()
     }
     Column {
 
@@ -264,7 +263,7 @@ fun DisplayCardItems(navController: NavHostController,
                                                                 println("Failure: ${t.message}")
                                                             }
                                                         })
-                                                        try{val response = api.getTotal(4)
+                                                        try{val response = api.getTotal(orderId)
                                                             prixtotal.value = response.total
                                                             Log.e("RestaurantMenuScreen", ": ${response}")
                                                         } catch (e: Exception) {
@@ -322,7 +321,7 @@ fun DisplayCardItems(navController: NavHostController,
                                                                     println("Failure: ${t.message}")
                                                                 }
                                                             })
-                                                        try{val response = api.getTotal(4)
+                                                        try{val response = api.getTotal(orderId)
                                                         prixtotal.value = response.total
                                                         Log.e("RestaurantMenuScreen", ": ${response}")
                                                     } catch (e: Exception) {
@@ -409,7 +408,7 @@ fun DisplayCardItems(navController: NavHostController,
                                                         // Handle errors
                                                         println("Error: ${e.message}")
                                                     }
-                                                    try{val response = api.getTotal(4)
+                                                    try{val response = api.getTotal(orderId)
                                                         prixtotal.value = response.total
                                                         Log.e("RestaurantMenuScreen", ": ${response}")
                                                     } catch (e: Exception) {
@@ -512,7 +511,7 @@ fun DisplayCardItems(navController: NavHostController,
                                 fontSize = 18.sp,
                                 color = orange
                             ))
-                        coroutineScope.launch { try{val response = api.getTotal(4)
+                        coroutineScope.launch { try{val response = api.getTotal(orderId)
                             prixtotal.value = response.total
                             Log.e("RestaurantMenuScreen", ": ${response}")
                         } catch (e: Exception) {
@@ -532,13 +531,22 @@ fun DisplayCardItems(navController: NavHostController,
 
 
 
+
                     ExtendedButton(
                         content = "Checkout",
-                        imageVector = Icons.Filled.ShoppingCart,
-                        onClick = {
-                      })
 
-               }
+                        imageVector = Icons.Filled.ShoppingCart,
+
+                        onClick = {
+
+                            navController.navigate(Destination.PayementandAddress.route) // Navigate to LieuPage
+                            menuList = emptyList()
+                        }
+                    )
+
+
+
+                }
             }
 
         }

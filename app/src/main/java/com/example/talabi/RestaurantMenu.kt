@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -53,6 +55,7 @@ import com.example.talabi.Composants.StarWithRatingDialog
 import com.example.talabi.api.RetrofitInstance
 import com.example.talabi.data.OrderItem
 import com.example.talabi.ui.theme.AppTheme
+import com.example.talabi.ui.theme.blue
 import com.example.talabi.ui.theme.orange
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,12 +66,15 @@ import kotlinx.coroutines.withContext
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String, sharedViewModel: SharedViewModel) {
-    val userId = 9 // Exemple d'ID utilisateur
+    val userId = sharedViewModel.UserIdd
+    println("hhhhhhhhhhhhhhhhhhhhhhhhhhh${userId}")
+    // Exemple d'ID utilisateur
     val menuItemId = 8
     val quantity = 4
     val specialNotes = "nnnnnnnn "
     val message = remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
    // val menu= remember { menuItems}
     Column (modifier = Modifier
         .padding(vertical = 24.dp, horizontal = 8.dp)) {
@@ -110,7 +116,9 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
         modifier = Modifier
             .shadow(shape = RoundedCornerShape(16.dp), elevation = 10.02.dp)
             .padding(bottom = 5.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { navController.navigate(Destination.fooddescription.getDestination(menuItem.id)) },
+
         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
 
         ) {
@@ -133,7 +141,8 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                     style = TextStyle(
                         fontStyle = FontStyle.Italic,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = blue
                     )
 
                 )
@@ -145,10 +154,16 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(3.dp),
                     ) {
-                        StarWithRatingDialog(menuItem.id,1)
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Star",
+                            tint = AppTheme.colors.secondarySurface, // Change the icon color
+                            modifier = Modifier.size(24.dp) // Change the icon size
+                        )
+
                         Text(
                             text = " ${menuItem.average_rating}",
-                            style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp)
+                            style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp,color = blue)
                         )
                         //Text(text = " ${menuItem.price}",style= TextStyle(fontStyle = FontStyle.Italic, fontSize = 14.sp))
                     }
@@ -195,7 +210,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                                 try {
 
                                     val newUser = OrderItem(
-                                        userId = 2,           // Remplacez `orderId` par `userId`
+                                        userId = userId,           // Remplacez `orderId` par `userId`
                                         menuItemId = menuItem.id,
                                         quantity = 1,         // Assurez-vous qu'une valeur > 0 est utilisée
                                         specialNotes = ""
@@ -204,6 +219,8 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
                                     withContext(Dispatchers.Main) {
                                         if (response.isSuccessful) {
                                             sharedViewModel.setOrderId(response.body()!!.orderId)
+                                            sharedViewModel.setOrderCreated(true)
+
                                             Log.e("truuuuuuuuuuuuuuuuuuuuuuuu", "Error: ${response.body()!!.orderId}")
 
                                         } else {
@@ -215,7 +232,7 @@ fun DisplayRestaurantMenu(navController: NavHostController, restaurantId: String
 
                                 }
                             }
-
+                            Toast.makeText(context, "Item added to your Order", Toast.LENGTH_SHORT).show()
 
                         },
                         content = "+",

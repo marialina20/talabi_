@@ -1,22 +1,5 @@
 package com.example.talabi
-//import android.os.Bundle
-//import android.widget.Toast
-//import androidx.activity.ComponentActivity
-//import androidx.activity.compose.setContent
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.tooling.preview.Preview
-//import com.example.talabi.api.RetrofitInstance
-//import kotlinx.coroutines.CoroutineScope
-//import kotlinx.coroutines.Dispatchers
-//import kotlinx.coroutines.launch
-//import kotlinx.coroutines.withContext
-//import retrofit2.Response
-//
-
-
-
 import DisplayCardItems
-import RegistrationScreen
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -26,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.composable
@@ -38,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.ahlem.CategoriesScreen
 import com.example.ahlem.HomeScreen
+import com.example.ahlem.MoreRestaurantsScreen
 import com.example.ahlem.SearchScreen
 import com.example.myapplication.ui.theme.DisplayLieuPage
 import com.example.talabi.data.SettingsScreen
@@ -48,14 +33,20 @@ import com.example.talabi.ui.theme.NotifListt
 
 
 class MainActivity : ComponentActivity() {
+    private lateinit var userPreferences: UserPreferences
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        userPreferences = UserPreferences(this)
         enableEdgeToEdge()
+        userPreferences = UserPreferences(this)
         setContent {
 
             AppTheme {
                 val navController= rememberNavController()
+
+
+
 
                 //MainScreen()
                 // DisplayItemDiscreption(menuItemid = 7, navController =navController)
@@ -84,9 +75,12 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
 
     val sharedViewModel: SharedViewModel = viewModel()
 
-    NavHost(navController=navController, startDestination= Destination.home.route
+
+    NavHost(navController=navController,  startDestination = if (sharedViewModel.loggedIn) Destination.home.route else Destination.login.route
 
     ) {
+
+
 
 
         composable(
@@ -100,48 +94,44 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
 //            DisplayItemDiscreption(menuItemid = 7, navController =navController ,sharedViewModel=sharedViewModel)
 //        }
         composable(Destination.Card.route) { DisplayCardItems(navController, sharedViewModel) }
-        composable(Destination.Notification.route) { NotifListt() }
-        composable(Destination.PayementandAddress.route) {
-            DisplayPayementInfo(
-                userid = 1,
-                orderid = 1,
-                navController
-            )
-        }
-        composable(Destination.LieuPage.route) { DisplayLieuPage(navController) }
+        composable(Destination.Notification.route) { NotifListt(sharedViewModel) }
+        composable(Destination.PayementandAddress.route) { DisplayPayementInfo(sharedViewModel,navController) }
+//        composable(
+//            route = "${Destination.LieuPage.route}/{orderId}",
+//            arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+//        ) { backStackEntry ->
+//            val orderId = backStackEntry.arguments?.getInt("orderId") ?: 0
+//            DisplayLieuPage(navController, orderId)
+//        }
+        composable(Destination.LieuPage.route) { DisplayLieuPage(navController, sharedViewModel = sharedViewModel) }
         composable(Destination.home.route) { HomeScreen(navController) }
         composable(Destination.search.route) { SearchScreen() }
-        composable(Destination.editprofile.route) { EditProfileScreen(navController=navController) }
+      //  composable(Destination.signup.route) { RegistrationScreen(navController=navController, onNavigateBack = {}) }
         composable(Destination.fooddescription.route) { //DisplayItemDiscreption(navController=navController, menuItemid = 8)
                 navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("itemid")?.toInt()
-            DisplayItemDiscreption(
-                navController = navController,
-                menuItemid = id!!,
-                sharedViewModel = sharedViewModel
-            )
-        }
+            DisplayItemDiscreption(navController=navController, menuItemid = id!!,sharedViewModel=sharedViewModel) }
         composable(
             route = "categories/{id}",
             arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { backStackEntry ->
             val restaurantId = backStackEntry.arguments?.getString("id") ?: ""
-            CategoriesScreen(id = restaurantId, navController)
+            CategoriesScreen(id = restaurantId,navController)
         }
 
        // composable(Destination.restaurant_details.route) { RestaurantDetailsScreen() }
-       // composable(Destination.more.route) { MoreRestaurantsScreen() }
+        composable(Destination.more.route) { MoreRestaurantsScreen() }
         composable(Destination.login.route) {
             LoginScreen(
+                sharedViewModel = sharedViewModel,
+                navController = navController,
                 modifier = Modifier.fillMaxSize(),
                 onNavigateToSignUp = { navController.navigate("signup") },
                 // onLoginSuccess = { navController.navigate("profile") } // Navigate to Profile screen after login
-                navController=navController
             )
         }
         composable(Destination.signup.route) {
-            RegistrationScreen(
-                modifier = Modifier.fillMaxSize(),
+            RegistrationScreen(navController=navController, sharedViewModel = sharedViewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }
@@ -149,23 +139,25 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
             ProfileScreen(
                 navController = navController,
                 onNavigateToFavoris = { /* Handle navigation to Favoris */ },
-                onNavigateToParametres = { navController.navigate("settings") },
+                onNavigateToParametres = {navController.navigate("settings")  },
                 onNavigateToPaiement = { /* Handle navigation to Paiement */ },
                 onLogout = { navController.popBackStack() }, // Handle logout by popping back to login
-                onNavigateToSignIn = { navController.navigate("login") }, // Navigate to login screen after logout
-                onEditProfile = { navController.navigate("edit_profile") } // Navigate to EditProfile screen
+                onNavigateToSignIn = { navController.navigate("login")
+                                     sharedViewModel.setLoggedIn(false)}, // Navigate to login screen after logout
+                onEditProfile = { navController.navigate("edit_profile") } ,// Navigate to EditProfile screen
+                sharedViewModel
             )
         }
         composable(Destination.settings.route) {
             SettingsScreen(
                 navController = navController,
-                onNavigateToLangue = { navController.navigate("language") },
-                onNavigateToNotifs = { /* Handle navigation to  */ },
-                onLogout = { navController.popBackStack() },
-                onNavigateToSignIn = { navController.navigate("login") },
-                onNavigateToSec = { /* Handle navigation to  */ },
-                onNavigateToAide = { /* Handle navigation to  */ },
-                onNavigateToConfi = { /* Handle navigation to  */ },
+                onNavigateToLangue= { navController.navigate("language")  },
+                onNavigateToNotifs= { /* Handle navigation to  */ },
+                onLogout= { navController.popBackStack() },
+                onNavigateToSignIn= {  navController.navigate("login") },
+                onNavigateToSec= { /* Handle navigation to  */ },
+                onNavigateToAide= { /* Handle navigation to  */ },
+                onNavigateToConfi= { /* Handle navigation to  */ },
             )
         }
         composable(Destination.language.route) {
@@ -176,21 +168,14 @@ fun NavigationScreen(navController: NavHostController,modifier:Modifier =Modifie
             )
         }
 
-
-
-//        composable("edit_profile") {
-//            // Use the default viewModel() function and pass the MainViewModelFactory if necessary
-//            val sharedViewModel: MainViewModel =
-//                viewModel() // This assumes you have the MainViewModel already set up with a factory
-//
-//            EditProfileScreen(
-//                navController = navController,
-//                viewModel = sharedViewModel // Pass the MainViewModel instance
-//            )
-//        }
-
+        composable("edit_profile") {
+            EditProfileScreen(
+                navController = navController // Pass NavController for back navigation
+            )
+        }
     }
-    }
+
+}
 
 
 //class MainActivity : ComponentActivity() {

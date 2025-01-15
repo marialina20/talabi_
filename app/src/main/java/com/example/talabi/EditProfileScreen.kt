@@ -26,27 +26,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-
 import androidx.compose.ui.text.font.FontWeight
-
 import androidx.navigation.NavController
-
 import com.example.talabi.ui.theme.orange
-
 import androidx.compose.runtime.remember
-
 import java.io.ByteArrayOutputStream
 import android.util.Base64
 import android.util.Log
 import com.example.talabi.api.RetrofitInstance
-import com.example.talabi.data.MenuItem
 import com.example.talabi.data.User
 import com.example.talabi.data.UserProfileRequest
-import io.ktor.http.ContentDisposition.Companion.File
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
+import java.math.BigInteger
+
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,10 +70,10 @@ fun EditProfileScreen(
     var user = remember { mutableStateOf(
        User(
             id = 1,
-          name="",
-           email="",
-           phone="",
-           address="",
+          name ="",
+           email ="",
+           phone ="",
+           address ="",
            profilePicture = "",
            password = "",
         )
@@ -267,11 +259,13 @@ fun EditProfileScreen(
                 )
             }
 
+
             Spacer(modifier = Modifier.height(16.dp))
 
             // Save Button
             Button(
                 onClick = {
+
                     val profilePictureBase64 = profileImageBitmap?.let { encodeBitmapToBase64(it) }
                     val userProfileRequestt = UserProfileRequest(
                         firstName = user.value.name,
@@ -280,29 +274,26 @@ fun EditProfileScreen(
                         email = user.value.email,
                         profilePicture = profilePictureBase64
                     )
-                        coroutineScope.launch {
-                            try {
-                                val response = RetrofitInstance.api.updateUserProfile(1,userProfileRequestt.firstName.toRequestBody("text/plain".toMediaTypeOrNull()),userProfileRequestt.email.toRequestBody("text/plain".toMediaTypeOrNull()))
-                                if (response.isSuccessful) {
-                                    val responseBody = response.body()
-                                    if (responseBody != null) {
-                                        user.value = responseBody  // Assign the list of restaurants to the state
-                                        Log.d("s7iiiiiiiiiiiiiiiiiiiiiiiiii7", "Data fetched successfully: $user")
-                                    } else {
-                                        Log.e("nuuuuuuuuuuuuuuuuuul", "Empty response body")
-                                    }
-                                } else {
-                                    Log.e("ghaaaaaaaaaaaaaaaaaaaaaalt", "Error fetching data: ${response.errorBody()?.string()}")
-                                }
-                            } catch (e: Exception) {
-                                Log.e("user", "Error: ${e.localizedMessage}")
-                            }
+//                    coroutineScope.launch {
+//                        try {
+//                            val response = RetrofitInstance.api.updateUserProfile(1,userProfileRequestt.firstName.toRequestBody("text/plain".toMediaTypeOrNull()),userProfileRequestt.email.toRequestBody("text/plain".toMediaTypeOrNull()))
+//                            if (response.isSuccessful) {
+//                                val responseBody = response.body()
+//                                if (responseBody != null) {
+//                                    user.value = responseBody  // Assign the list of restaurants to the state
+//                                    Log.d("user", "Data fetched successfully: $user")
+//                                } else {
+//                                    Log.e("user", "Empty response body")
+//                                }
+//                            } else {
+//                                Log.e("user", "Error fetching data: ${response.errorBody()?.string()}")
+//                            }
+//                        } catch (e: Exception) {
+//                            Log.e("user", "Error: ${e.localizedMessage}")
+//                        }
+//
+//                    }
 
-                    }
-
-
-
-                    // Send data to MainViewModel
 
 
                     // Call MainViewModel function to send this data to backend

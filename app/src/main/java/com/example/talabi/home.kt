@@ -1,5 +1,4 @@
 package com.example.ahlem
-
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -9,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.TextFieldDefaults
-
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -54,14 +52,7 @@ import com.example.talabi.Restaurant
 import com.example.talabi.api.RetrofitInstance
 import kotlinx.coroutines.launch
 
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            MainScreen()
-//        }
-//    }
-//}
+
 
 @Composable
 fun MainScreeen() {
@@ -106,7 +97,7 @@ fun HomeScreen(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                CallButton(phoneNumber = "1234567890")
+Spacer(modifier=Modifier.height(20.dp))
 
                 Text(
                     text = buildAnnotatedString {
@@ -130,13 +121,7 @@ fun HomeScreen(navController: NavController) {
                     )
                 )
             }
-            Image(
-                painter = painterResource(id = R.drawable.profile),
-                contentDescription = "Profile Picture",
-                modifier = Modifier
-                    .size(70.dp)
-                    .clip(CircleShape)
-            )
+
         }
 
 
@@ -187,11 +172,11 @@ fun SearchBar(navController: NavController) {
 @Composable
 fun CategoriesRow(navController: NavController) {
     val categories = listOf(
-        Category(
-            id = java.util.UUID.randomUUID().toString(), // Assign random UUID
-            name = "Pizza",
-            imageRes = R.drawable.pizza1
-        ),
+//        Category(
+//            id = java.util.UUID.randomUUID().toString(), // Assign random UUID
+//            name = "Pizza",
+//            imageRes = R.drawable.pizza1
+//        ),
         Category(
             id = java.util.UUID.randomUUID().toString(), // Assign random UUID
             name = "Chinese",
@@ -201,7 +186,42 @@ fun CategoriesRow(navController: NavController) {
             id = java.util.UUID.randomUUID().toString(), // Assign random UUID
             name = "Italian",
             imageRes = R.drawable.burger1
-        )
+        ),
+        Category(
+                id = java.util.UUID.randomUUID().toString(), // Assign random UUID
+        name = "Indian",
+        imageRes = R.drawable.img4
+    ),
+    Category(
+        id = java.util.UUID.randomUUID().toString(), // Assign random UUID
+        name = "Japanese",
+        imageRes = R.drawable.img9
+    ),
+    Category(
+        id = java.util.UUID.randomUUID().toString(), // Assign random UUID
+        name = "Mexican",
+        imageRes = R.drawable.img5
+    ),
+    Category(
+        id = java.util.UUID.randomUUID().toString(), // Assign random UUID
+        name = "American",
+        imageRes = R.drawable.img10
+    ),
+    Category(
+        id = java.util.UUID.randomUUID().toString(), // Assign random UUID
+        name = "Mediterranean",
+        imageRes = R.drawable.img1
+    ),
+    Category(
+        id = java.util.UUID.randomUUID().toString(), // Assign random UUID
+        name = "Vegan",
+        imageRes = R.drawable.img7
+    ),
+    Category(
+        id = java.util.UUID.randomUUID().toString(), // Assign random UUID
+        name = "BBQ",
+        imageRes = R.drawable.chinese
+    )
     )
 
 
@@ -247,111 +267,6 @@ fun CategoriesRow(navController: NavController) {
 }
 
 
-
-//@Composable
-//fun NearRestaurantsList(navController: NavController) {
-//    val restaurants = listOf(
-//        Restaurant(
-//            id = java.util.UUID.randomUUID().toString(), // Assign random UUID
-//            name = "Le Roi",
-//            type = "Cuisine Italienne",
-//            location = "Rue el Akid, Bebzzouar, Alger",
-//            rating = 4.7,
-//            phone = "+213 555 123 456",
-//            imageRes = R.drawable.pizza1
-//        ),
-//        Restaurant(
-//            id = java.util.UUID.randomUUID().toString(), // Assign random UUID
-//            name = "The Brothers",
-//            type = "Fast Food",
-//            location = "Rue Hassiba Ben Bouali, Alger",
-//            rating = 4.5,
-//            phone = "+213 777 456 789",
-//            imageRes = R.drawable.burger1
-//        )
-//    )
-//
-//    LazyColumn(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 16.dp)
-//    ) {
-//        items(restaurants) { restaurant ->
-//            Card(
-//                shape = RoundedCornerShape(30.dp),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(vertical = 8.dp)
-//                    .clickable {
-////                        println("Restaurant ID: ${restaurant.id}") // Example of using the ID
-////                        navController.navigate("restaurant_details")
-//                        navController.navigate(Destination.RestaurantMenu.route)
-//
-//                    },
-//                colors = CardDefaults.cardColors(containerColor = Color.White),
-//                elevation = CardDefaults.cardElevation(3.dp) // Add shadow
-//            ) {
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(120.dp), // Adjust height for consistency
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    Image(
-//                        painter = painterResource(id = restaurant.imageRes),
-//                        contentDescription = "Restaurant Image",
-//                        modifier = Modifier
-//                            .fillMaxHeight() // Ensures image takes full height
-//                            .width(120.dp) // Adjust width as needed
-//                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
-//                    )
-//                    Spacer(modifier = Modifier.width(16.dp))
-//                    Column(
-//                        verticalArrangement = Arrangement.spacedBy(4.dp), // Adds spacing between lines
-//                        modifier = Modifier.padding(vertical = 8.dp) // Adds vertical padding
-//                    ) {
-//                        Text(
-//                            text = restaurant.name,
-//                            style = TextStyle(
-//                                fontWeight = FontWeight.Bold,
-//                                fontSize = 16.sp,
-//                                color = Color(0xFF333A73)
-//                            )
-//                        )
-//                        Text(
-//                            text = restaurant.type,
-//                            style = TextStyle(
-//                                color = Color.Gray,
-//                                fontSize = 12.sp
-//                            )
-//                        )
-//                        Text(
-//                            text = restaurant.location,
-//                            style = TextStyle(
-//                                color = Color.Gray,
-//                                fontSize = 12.sp
-//                            )
-//                        )
-//                        Text(
-//                            text = "⭐ ${restaurant.rating}",
-//                            style = TextStyle(
-//                                color = Color(0xFFFFA500),
-//                                fontSize = 12.sp
-//                            )
-//                        )
-//                        Text(
-//                            text = "📞 ${restaurant.phone}",
-//                            style = TextStyle(
-//                                color = Color.Gray,
-//                                fontSize = 12.sp
-//                            )
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 
 @Composable
@@ -408,14 +323,7 @@ fun NearRestaurantsList(navController: NavController) {
                     // Assuming the image is stored in a drawable or URL for each restaurant
                     val imageRes = R.drawable.drink // Replace with actual logic to load image
                     RestaurantMenuItemImage(restaurant.logo)
-//                    AsyncImage(
-//                        model = restaurant.logo,
-//                        contentDescription = "Restaurant Image",
-//                        modifier = Modifier
-//                            .fillMaxHeight() // Ensures image takes full height
-//                            .width(120.dp) // Adjust width as needed
-//                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
-//                    )
+
                     Spacer(modifier = Modifier.width(16.dp))
                     Column(
                         verticalArrangement = Arrangement.spacedBy(4.dp), // Adds spacing between lines
@@ -459,15 +367,7 @@ fun NearRestaurantsList(navController: NavController) {
 
 
 
-//data class Restaurant(
-//    val id: String, // Add an ID field
-//    val name: String,
-//    val type: String,
-//    val location: String,
-//    val rating: Double,
-//    val phone: String,
-//    val imageRes: Int
-//)
+
 data class Category(
     val id: String, // Add an ID field
     val name: String,
@@ -645,7 +545,7 @@ fun CategoriesScreen(id : String, navController: NavController) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(bottom = 100.dp)
         ) {
             items(restaurantList) { restaurant ->
                 Card(
@@ -664,15 +564,7 @@ fun CategoriesScreen(id : String, navController: NavController) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         // Assuming the image is stored in a drawable or URL for each restaurant
-                        val imageRes = R.drawable.drink // Replace with actual logic to load image
-//                    AsyncImage(
-//                        model = restaurant.logo,
-//                        contentDescription = "Restaurant Image",
-//                        modifier = Modifier
-//                            .fillMaxHeight() // Ensures image takes full height
-//                            .width(120.dp) // Adjust width as needed
-//                            .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
-//                    )
+
                         RestaurantMenuItemImage(restaurant.logo)
                         Spacer(modifier = Modifier.width(16.dp))
                         Column(

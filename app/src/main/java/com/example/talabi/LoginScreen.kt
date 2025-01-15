@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.talabi.R
 import com.example.talabi.api.RetrofitInstance
@@ -35,8 +34,9 @@ import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier, onNavigateToSignUp: () -> Unit,navController: NavHostController) {
+fun LoginScreen(modifier: Modifier = Modifier, sharedViewModel: SharedViewModel,onNavigateToSignUp: () -> Unit,navController: NavHostController) {
     val context = LocalContext.current
+
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
@@ -44,6 +44,7 @@ fun LoginScreen(modifier: Modifier = Modifier, onNavigateToSignUp: () -> Unit,na
     var passwordError by remember { mutableStateOf<String?>(null) }
     var loginRequest by remember{ mutableStateOf(LoginRequest(email = "user@example.com", password = "password123")) }
     // Google Sign-In setup
+    val coroutineScope = rememberCoroutineScope()
     val RC_SIGN_IN = 9001
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken("YOUR_WEB_CLIENT_ID") // Replace with your Web Client ID
@@ -51,7 +52,7 @@ fun LoginScreen(modifier: Modifier = Modifier, onNavigateToSignUp: () -> Unit,na
         .build()
 
     val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(context, gso)
-    val coroutineScope = rememberCoroutineScope()
+
     val signInResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = { result ->
@@ -129,6 +130,7 @@ fun LoginScreen(modifier: Modifier = Modifier, onNavigateToSignUp: () -> Unit,na
                 password.value = it
                 loginRequest.password=password.value
                 if (it.length >= 8) passwordError = null
+
             },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
@@ -173,44 +175,45 @@ fun LoginScreen(modifier: Modifier = Modifier, onNavigateToSignUp: () -> Unit,na
                     emailError = "Please enter a valid email address"
                     isValid = false
                 }
-
-//                if (password.value.length < 8) {
-//                    passwordError = "Password must be at least 8 characters"
-//                    isValid = false
-//                }
+                if (password.value.length < 8) {
+                    passwordError = "Password must be at least 8 characters"
+                    isValid = false
+                }
                 if (isValid) {
-
+                    // Handle login logic
                     Log.d("Login", "Email: ${email.value}, Password: ${password.value}")
                 }
-                coroutineScope.launch {
+
+            coroutineScope.launch {
 
 
-                    try {
-                        val response = RetrofitInstance.api.login(loginRequest)
-                        if (response.isSuccessful) {
-                            val loginResponse = response.body()
-                            if (loginResponse != null) {
+                try {
+                    val response = RetrofitInstance.api.login(loginRequest)
+                    if (response.isSuccessful) {
+                        val loginResponse = response.body()
+                        sharedViewModel.setUserId(response.body()!!.user!!.id)
+                        println("hhhhhhhhhhhhhhhhhhhhhhhhhhh${sharedViewModel.UserIdd}")
+                        if (loginResponse != null) {
 
-                                navController.navigate(Destination.home.route)
-                                Log.d("Loginnnnnnnnnnnnnnnnnnnnnn", "Login successful: ${loginResponse.user}")
-                            } else {
-                                passwordError = "Please enter a valid password"
-                                isValid = false
-                                Log.e("Login", "Empty response body")
-                            }
+                            navController.navigate(Destination.home.route)
+                            sharedViewModel.setLoggedIn(true)
+                            Log.d("Loginnnnnnnnnnnnnnnnnnnnnn", "Login successful: ${loginResponse.user}")
                         } else {
-
                             passwordError = "Please enter a valid password"
                             isValid = false
-
-                            Log.e("Login", "Login failed: ${response.errorBody()?.string()}")
+                            Log.e("Login", "Empty response body")
                         }
-                    } catch (e: Exception) {
-                        Log.e("Login", "Error: ${e.localizedMessage}")
+                    } else {
+
+                        passwordError = "Please enter a valid password"
+                        isValid = false
+
+                        Log.e("Login", "Login failed: ${response.errorBody()?.string()}")
                     }
+                } catch (e: Exception) {
+                    Log.e("Login", "Error: ${e.localizedMessage}")
                 }
-//navController.navigate(Destination.home.route)
-            },
+            }},
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = orange,
